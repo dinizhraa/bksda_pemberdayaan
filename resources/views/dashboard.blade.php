@@ -296,14 +296,19 @@
                                 <td><span class="tag">{{ $kelompok->jenis_usaha }}</span></td>
                                 <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
                                 <td class="text-right">
-                                    <form action="{{ route('kelompok.destroy', $kelompok->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-icon-danger" title="Hapus data" aria-label="Hapus {{ $kelompok->nama_kelompok }}"
-                                                onclick="return confirm('Yakin ingin menghapus data kelompok ini?')">
-                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
+                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                        </a>
+                                        <form action="{{ route('kelompok.destroy', $kelompok->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-icon-danger" title="Hapus data" aria-label="Hapus {{ $kelompok->nama_kelompok }}"
+                                                    onclick="return confirm('Yakin ingin menghapus data kelompok ini?')">
+                                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -321,20 +326,6 @@
             </div>
         </x-glass-card>
 
-        <!-- Visualisasi data mining -->
-        <x-glass-card id="clustering" class="scroll-mt-6">
-            <header class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                    <h2 class="card-title">Visualisasi Data Mining (K-Means Clustering Kawasan)</h2>
-                    <p class="mt-0.5 text-xs text-ink-500">Pemetaan kawasan konservasi berdasarkan Total NTE dan jumlah desa penyangga.</p>
-                </div>
-                <span class="chip chip-neutral px-3 py-1.5"><i class="fa-solid fa-brain" aria-hidden="true"></i> Data Mining Engine</span>
-            </header>
-
-            <div class="relative h-80">
-                <canvas id="chart-cluster" role="img" aria-label="Diagram sebar kawasan berdasarkan total NTE dan jumlah desa"></canvas>
-            </div>
-        </x-glass-card>
     </div>
 
     <script type="application/json" id="dashboard-data">@json($charts, JSON_HEX_TAG | JSON_HEX_AMP)</script>

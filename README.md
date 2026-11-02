@@ -41,6 +41,33 @@ php artisan boost:install
 
 Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
+## Data import / data mining dari PDF atau Excel
+
+Untuk menyiapkan data kawasan, NTE, dan kelompok binaan dari file CSV hasil ekstraksi PDF/Excel, gunakan perintah artisan berikut:
+
+```bash
+php artisan data:import kawasan storage/app/templates/kawasan_template.csv
+php artisan data:import nte storage/app/templates/nte_template.csv
+php artisan data:import kelompok storage/app/templates/kelompok_template.csv
+```
+
+Format CSV harus mengikuti template yang ada di folder `storage/app/templates/`. Kolom yang dipakai:
+
+- Kawasan: `nama_kawasan`, `fungsi_kawasan`, `jumlah_desa_sekitar`, `jumlah_desa_difasilitasi`
+- NTE: `tahun`, `nama_kawasan`, `nte_langsung`, `nte_tidak_langsung`, `total_nte`
+- Kelompok: `tahun_pembinaan`, `nama_kawasan`, `nama_desa`, `nama_kelompok`, `nama_ketua`, `no_hp`, `jenis_usaha`, `produk_unggulan`, `sk_kelompok`, `jumlah_anggota`, `jumlah_bantuan`
+
+Jika ingin membersihkan tabel sebelum import, tambahkan flag `--truncate`.
+
+Contoh:
+
+```bash
+php artisan data:import kawasan storage/app/templates/kawasan_template.csv --truncate
+php artisan data:import kelompok storage/app/templates/kelompok_template.csv --dry-run
+```
+
+Flag `--dry-run` hanya menampilkan simulasi tanpa menyimpan data.
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).

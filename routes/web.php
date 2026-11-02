@@ -13,7 +13,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Route Kelompok Binaan
     Route::get('/kelompok/tambah', [DashboardController::class, 'createKelompok'])->name('kelompok.create');
+    Route::get('/kelompok/{id}/edit', [DashboardController::class, 'editKelompok'])->name('kelompok.edit');
     Route::post('/kelompok', [DashboardController::class, 'storeKelompok'])->name('kelompok.store');
+    Route::put('/kelompok/{id}', [DashboardController::class, 'updateKelompok'])->name('kelompok.update');
     Route::delete('/kelompok/{id}', [DashboardController::class, 'destroyKelompok'])->name('kelompok.destroy');
 
     // Route Profil Pengguna (Bawaan Laravel Breeze)
