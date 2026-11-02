@@ -32,6 +32,31 @@
 
     // ---- Data grafik (dibaca oleh resources/js/dashboard.js) ----
     $kumulatif = 0;
+    $clusterData = $kawasans->map(function ($k) use ($totalNte) {
+        $nilai = (float) ($k->nte?->total_nte ?? 0);
+        $persentase = $totalNte > 0 ? ($nilai / $totalNte) * 100 : 0;
+
+        if ($persentase > 30) {
+            $cluster = 'Tinggi';
+            $clusterColor = '#16a34a';
+        } elseif ($persentase >= 15) {
+            $cluster = 'Sedang';
+            $clusterColor = '#f59e0b';
+        } else {
+            $cluster = 'Rendah';
+            $clusterColor = '#ef4444';
+        }
+
+        return [
+            'label' => $k->nama_kawasan,
+            'x' => round($nilai / 1e6, 1),
+            'y' => (int) $k->jumlah_desa_sekitar,
+            'cluster' => $cluster,
+            'clusterColor' => $clusterColor,
+            'persentase' => $persentase,
+        ];
+    })->values();
+
     $charts = [
         'nte' => [
             'labels' => $urutNte->pluck('nama_kawasan'),
@@ -52,11 +77,7 @@
             'langsung' => $topDelapan->map(fn ($k) => round($k->nte->nte_langsung / 1e6, 1)),
             'tidakLangsung' => $topDelapan->map(fn ($k) => round($k->nte->nte_tidak_langsung / 1e6, 1)),
         ],
-        'cluster' => $kawasans->map(fn ($k) => [
-            'label' => $k->nama_kawasan,
-            'x' => round(($k->nte?->total_nte ?? 0) / 1e6, 1),
-            'y' => (int) $k->jumlah_desa_sekitar,
-        ])->values(),
+        'cluster' => $clusterData,
     ];
 @endphp
 
@@ -323,6 +344,52 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </x-glass-card>
+
+        <x-glass-card id="clustering" class="scroll-mt-6">
+            <header class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="card-title">Clustering Kawasan Berdasarkan NTE</h2>
+                    <p class="mt-0.5 text-xs text-ink-500">Kawasan dikelompokkan menurut kontribusi NTE: Tinggi, Sedang, dan Rendah.</p>
+                </div>
+                <span class="chip chip-neutral px-3 py-1.5"><i class="fa-solid fa-brain" aria-hidden="true"></i> Data Mining Engine</span>
+            </header>
+
+            <div class="grid gap-3 md:grid-cols-3">
+                @php
+                    $clusterSummary = [
+                        'Tinggi' => ['color' => '#16a34a', 'items' => $clusterData->where('cluster', 'Tinggi')],
+                        'Sedang' => ['color' => '#f59e0b', 'items' => $clusterData->where('cluster', 'Sedang')],
+                        'Rendah' => ['color' => '#ef4444', 'items' => $clusterData->where('cluster', 'Rendah')],
+                    ];
+                @endphp
+
+                @foreach ($clusterSummary as $label => $entry)
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <div class="mb-2 flex items-center justify-between">
+                            <span class="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
+                                <span class="size-2.5 rounded-full" style="background-color: {{ $entry['color'] }}"></span>
+                                {{ $label }}
+                            </span>
+                            <span class="text-xs text-slate-500">{{ $entry['items']->count() }} kawasan</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            @forelse ($entry['items'] as $item)
+                                <li class="flex items-center justify-between gap-2">
+                                    <span class="truncate">{{ $item['label'] }}</span>
+                                    <span class="font-semibold">{{ number_format($item['persentase'], 2, ',', '.') }}%</span>
+                                </li>
+                            @empty
+                                <li class="text-slate-400">Tidak ada kawasan.</li>
+                            @endforelse
+                        </ul>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="relative mt-5 h-80">
+                <canvas id="chart-cluster" role="img" aria-label="Diagram sebar kawasan berdasarkan total NTE dan jumlah desa"></canvas>
             </div>
         </x-glass-card>
 
