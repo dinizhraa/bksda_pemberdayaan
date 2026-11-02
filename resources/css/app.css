@@ -1,3 +1,259 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+@import '@fortawesome/fontawesome-free/css/solid.min.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
+    body {
+        @apply font-sans text-ink-900 antialiased;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            transition-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    /* -------------------------------------------------------------- */
+    /* Latar & permukaan kaca (glassmorphism)                          */
+    /* -------------------------------------------------------------- */
+    .app-backdrop {
+        background-color: #e4f2f3;
+        background-attachment: fixed;
+        background-image:
+            radial-gradient(60rem 40rem at 6% -10%, rgb(255 255 255 / 0.9), transparent 60%),
+            radial-gradient(52rem 38rem at 100% 0%, rgb(125 211 252 / 0.38), transparent 60%),
+            radial-gradient(48rem 40rem at 88% 112%, rgb(45 212 191 / 0.30), transparent 60%),
+            radial-gradient(40rem 30rem at 0% 100%, rgb(186 230 253 / 0.55), transparent 60%);
+    }
+
+    .glass {
+        @apply border border-white/70 bg-white/60 shadow-glass backdrop-blur-xl;
+    }
+
+    .glass-card {
+        @apply glass min-w-0 rounded-3xl p-5;
+    }
+
+    .app-frame {
+        @apply mx-auto flex min-h-[calc(100vh-2rem)] max-w-[1600px] gap-6 rounded-4xl border border-white/60 bg-white/30 p-4 shadow-glass sm:p-6;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* Sidebar                                                         */
+    /* -------------------------------------------------------------- */
+    .sidebar {
+        @apply fixed inset-y-3 left-3 z-40 flex w-64 -translate-x-[120%] flex-col gap-6 overflow-y-auto rounded-3xl border border-white/70 bg-white/85 p-5 shadow-glass backdrop-blur-xl transition-transform duration-300
+            lg:sticky lg:inset-auto lg:top-10 lg:z-auto lg:h-[calc(100vh-5rem)] lg:w-56 lg:translate-x-0 lg:self-start lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none xl:w-60;
+    }
+
+    .sidebar-open {
+        @apply translate-x-0;
+    }
+
+    .side-link {
+        @apply flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-ink-500 transition-colors
+            hover:bg-white/60 hover:text-ink-900
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500;
+    }
+
+    .side-link-active {
+        @apply bg-brand-500/20 font-semibold text-brand-700 hover:bg-brand-500/20 hover:text-brand-700;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* Topbar                                                          */
+    /* -------------------------------------------------------------- */
+    .page-title {
+        @apply text-2xl font-bold tracking-tight text-ink-900;
+    }
+
+    .page-sub {
+        @apply mt-1 max-w-xl text-sm text-ink-500;
+    }
+
+    .pill {
+        @apply inline-flex items-center gap-2 rounded-xl border border-white/80 bg-white/70 px-3.5 py-2.5 text-sm font-medium text-ink-700 shadow-sm;
+    }
+
+    .search-box {
+        @apply flex w-full items-center gap-2.5 rounded-xl border border-white/80 bg-white/70 px-3.5 py-2.5 text-sm text-ink-400 shadow-sm backdrop-blur
+            focus-within:ring-2 focus-within:ring-brand-500 sm:w-72;
+    }
+
+    .search-box input {
+        @apply w-full border-0 bg-transparent p-0 text-sm text-ink-900 placeholder:text-ink-400 focus:ring-0;
+    }
+
+    .icon-btn {
+        @apply grid size-10 place-items-center rounded-xl border border-white/80 bg-white/70 text-ink-700 shadow-sm transition-colors hover:bg-white
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* Kartu & elemen konten                                           */
+    /* -------------------------------------------------------------- */
+    .card-title {
+        @apply text-[15px] font-semibold text-ink-900;
+    }
+
+    .card-pill {
+        @apply shrink-0 whitespace-nowrap rounded-lg border border-slate-200/80 bg-white/70 px-3 py-1.5 text-xs font-medium text-ink-700;
+    }
+
+    .card-link {
+        @apply card-pill transition-colors hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500;
+    }
+
+    .big-number {
+        @apply text-[26px] font-bold leading-none tracking-tight text-ink-900;
+    }
+
+    .chip {
+        @apply inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold;
+    }
+
+    .chip-up {
+        @apply bg-emerald-50 text-emerald-600;
+    }
+
+    .chip-neutral {
+        @apply bg-brand-50 text-brand-600;
+    }
+
+    .icon-badge {
+        @apply grid size-10 shrink-0 place-items-center rounded-full text-sm font-bold;
+    }
+
+    .tone-teal {
+        @apply bg-brand-100 text-brand-600;
+    }
+
+    .tone-green {
+        @apply bg-emerald-100 text-emerald-600;
+    }
+
+    .tone-purple {
+        @apply bg-violet-100 text-violet-600;
+    }
+
+    .tone-blue {
+        @apply bg-blue-100 text-blue-600;
+    }
+
+    .tone-amber {
+        @apply bg-amber-100 text-amber-600;
+    }
+
+    .list-row {
+        @apply flex items-center gap-3 border-b border-slate-200/60 py-3 last:border-0 first:pt-0 last:pb-0;
+    }
+
+    .legend-dot {
+        @apply size-2 shrink-0 rounded-full;
+    }
+
+    .empty-state {
+        @apply grid place-items-center gap-2 py-10 text-center text-sm text-ink-500;
+    }
+
+    /* Kartu kawasan (pengganti kartu kredit pada referensi) */
+    .kawasan-card {
+        @apply relative flex h-52 flex-col justify-between overflow-hidden rounded-2xl p-4 text-white shadow-lg shadow-brand-700/20;
+        background-image: linear-gradient(135deg, #3fb8aa 0%, #138177 100%);
+    }
+
+    .kawasan-card::after {
+        content: '';
+        @apply pointer-events-none absolute -right-10 -top-12 size-44 rounded-full bg-white/10;
+    }
+
+    .card-chip {
+        @apply block h-6 w-8 rounded-md border border-white/40 bg-white/25;
+    }
+
+    .add-tile {
+        @apply flex h-52 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-300 bg-white/50 p-2 text-center text-xs font-medium text-ink-500 transition-colors
+            hover:border-brand-400 hover:text-brand-700
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500;
+    }
+
+    .carousel-dot {
+        @apply size-2 rounded-full bg-slate-300 transition-colors;
+    }
+
+    .carousel-dot-active {
+        @apply bg-brand-600;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* Tombol & form                                                   */
+    /* -------------------------------------------------------------- */
+    .btn-brand {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors
+            hover:bg-brand-800 active:bg-brand-900
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-sm font-semibold text-ink-700 transition-colors
+            hover:bg-white
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+    }
+
+    .field {
+        @apply rounded-xl border-slate-200 bg-white/70 text-sm text-ink-900 shadow-sm placeholder:text-ink-400
+            focus:border-brand-500 focus:ring-brand-500;
+    }
+
+    .field-label {
+        @apply block text-sm font-semibold text-ink-700;
+    }
+
+    .avatar {
+        @apply grid size-9 shrink-0 place-items-center rounded-full bg-brand-100 text-sm font-bold text-brand-700;
+    }
+
+    /* -------------------------------------------------------------- */
+    /* Tabel                                                           */
+    /* -------------------------------------------------------------- */
+    .glass-table {
+        @apply w-full min-w-[56rem] text-left text-sm;
+    }
+
+    .glass-table thead th {
+        @apply bg-white/50 px-4 py-3 text-xs font-semibold text-ink-500 first:rounded-l-xl last:rounded-r-xl;
+    }
+
+    .glass-table tbody tr {
+        @apply border-b border-slate-200/60 transition-colors last:border-0 hover:bg-white/50;
+    }
+
+    .glass-table tbody td {
+        @apply px-4 py-3 align-middle;
+    }
+
+    .tag {
+        @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200/80 bg-white/70 px-2.5 py-1 text-xs font-medium text-ink-700;
+    }
+}
+
+@layer components {
+    .btn-icon-danger {
+        @apply grid size-8 place-items-center rounded-full text-rose-500 transition-colors hover:bg-rose-50
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400;
+    }
+}
