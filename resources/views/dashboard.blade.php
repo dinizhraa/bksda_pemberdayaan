@@ -32,30 +32,7 @@
 
     // ---- Data grafik (dibaca oleh resources/js/dashboard.js) ----
     $kumulatif = 0;
-    $clusterData = $kawasans->map(function ($k) use ($totalNte) {
-        $nilai = (float) ($k->nte?->total_nte ?? 0);
-        $persentase = $totalNte > 0 ? ($nilai / $totalNte) * 100 : 0;
-
-        if ($persentase > 30) {
-            $cluster = 'Tinggi';
-            $clusterColor = '#16a34a';
-        } elseif ($persentase >= 15) {
-            $cluster = 'Sedang';
-            $clusterColor = '#f59e0b';
-        } else {
-            $cluster = 'Rendah';
-            $clusterColor = '#ef4444';
-        }
-
-        return [
-            'label' => $k->nama_kawasan,
-            'x' => round($nilai / 1e6, 1),
-            'y' => (int) $k->jumlah_desa_sekitar,
-            'cluster' => $cluster,
-            'clusterColor' => $clusterColor,
-            'persentase' => $persentase,
-        ];
-    })->values();
+    $clusterData = $clusterData ?? App\Http\Controllers\DashboardController::buildKawasanClusterData($kawasans, (float) $totalNte);
 
     $charts = [
         'nte' => [
@@ -83,8 +60,8 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="page-title">Ringkasan</h1>
-        <p class="page-sub">Selamat datang, {{ strtok(Auth::user()->name, ' ') }}! Pantau pemberdayaan masyarakat di sekitar kawasan konservasi BKSDA Sulawesi Tengah.</p>
+        <h1 class="page-title">Data Mining | Kerja Praktek | Manajemen Data</h1>
+        <p class="page-sub">Selamat datang, {{ strtok(Auth::user()->name, ' ') }}! Dashboard ini menampilkan analisis kawasan konservasi berbasis data untuk mendukung proses data mining, kerja praktek, dan manajemen data BKSDA Sulawesi Tengah.</p>
     </x-slot>
 
     <x-slot name="actions">
@@ -117,6 +94,27 @@
                 <x-rupiah :value="$totalBantuan ?? 0" />
             </x-stat-card>
         </div>
+
+        <x-glass-card title="Tahapan Data Mining" class="scroll-mt-6">
+            <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <div class="rounded-2xl border border-brand-100 bg-brand-50/60 p-3">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">01. Preprocessing</p>
+                    <p class="text-sm text-slate-700">Pembersihan dan penyusunan data NTE, kawasan, dan kelompok agar siap dianalisis secara konsisten.</p>
+                </div>
+                <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-3">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">02. Clustering</p>
+                    <p class="text-sm text-slate-700">Pengelompokan kawasan konservasi berdasarkan kontribusi NTE dan karakteristik jumlah desa penyangga.</p>
+                </div>
+                <div class="rounded-2xl border border-sky-100 bg-sky-50/60 p-3">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">03. Evaluasi</p>
+                    <p class="text-sm text-slate-700">Interpretasi hasil analisis untuk menilai pola wilayah, kontribusi, dan prioritas pemberdayaan masyarakat.</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-3">
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">04. Proyek Data Mining</p>
+                    <p class="text-sm text-slate-700">Hasil visualisasi ini menjadi dasar laporan kerja praktek dan manajemen data berbasis bukti.</p>
+                </div>
+            </div>
+        </x-glass-card>
 
         <!-- Baris 1: sebaran NTE, bantuan per usaha, kelompok terbaru -->
         <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-[1.7fr_1fr_1.1fr]">
@@ -188,8 +186,6 @@
         <!-- Baris 2: kawasan unggulan, kawasan teratas, NTE langsung vs tidak langsung -->
         <div id="kawasan" class="grid scroll-mt-6 gap-4 lg:grid-cols-2 xl:grid-cols-[1.15fr_1fr_1.4fr]">
             <x-glass-card title="Kawasan Unggulan">
-                <x-slot name="action"><a href="#clustering" class="card-link">Lihat sebaran</a></x-slot>
-
                 @if ($kawasanTeratas->isEmpty())
                     <div class="empty-state">Belum ada data NTE kawasan.</div>
                 @else
@@ -350,43 +346,11 @@
         <x-glass-card id="clustering" class="scroll-mt-6">
             <header class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h2 class="card-title">Clustering Kawasan Berdasarkan NTE</h2>
-                    <p class="mt-0.5 text-xs text-ink-500">Kawasan dikelompokkan menurut kontribusi NTE: Tinggi, Sedang, dan Rendah.</p>
+                    <h2 class="card-title">Analisis Clustering Kawasan Berdasarkan NTE</h2>
+                    <p class="mt-0.5 text-xs text-ink-500">Pemetaan kawasan hasil proses data mining untuk melihat pola kontribusi NTE dan keterkaitan dengan jumlah desa penyangga.</p>
                 </div>
-                <span class="chip chip-neutral px-3 py-1.5"><i class="fa-solid fa-brain" aria-hidden="true"></i> Data Mining Engine</span>
+                <span class="chip chip-neutral px-3 py-1.5"><i class="fa-solid fa-brain" aria-hidden="true"></i> Data Mining</span>
             </header>
-
-            <div class="grid gap-3 md:grid-cols-3">
-                @php
-                    $clusterSummary = [
-                        'Tinggi' => ['color' => '#16a34a', 'items' => $clusterData->where('cluster', 'Tinggi')],
-                        'Sedang' => ['color' => '#f59e0b', 'items' => $clusterData->where('cluster', 'Sedang')],
-                        'Rendah' => ['color' => '#ef4444', 'items' => $clusterData->where('cluster', 'Rendah')],
-                    ];
-                @endphp
-
-                @foreach ($clusterSummary as $label => $entry)
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <div class="mb-2 flex items-center justify-between">
-                            <span class="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
-                                <span class="size-2.5 rounded-full" style="background-color: {{ $entry['color'] }}"></span>
-                                {{ $label }}
-                            </span>
-                            <span class="text-xs text-slate-500">{{ $entry['items']->count() }} kawasan</span>
-                        </div>
-                        <ul class="space-y-2 text-xs text-slate-600">
-                            @forelse ($entry['items'] as $item)
-                                <li class="flex items-center justify-between gap-2">
-                                    <span class="truncate">{{ $item['label'] }}</span>
-                                    <span class="font-semibold">{{ number_format($item['persentase'], 2, ',', '.') }}%</span>
-                                </li>
-                            @empty
-                                <li class="text-slate-400">Tidak ada kawasan.</li>
-                            @endforelse
-                        </ul>
-                    </div>
-                @endforeach
-            </div>
 
             <div class="relative mt-5 h-80">
                 <canvas id="chart-cluster" role="img" aria-label="Diagram sebar kawasan berdasarkan total NTE dan jumlah desa"></canvas>

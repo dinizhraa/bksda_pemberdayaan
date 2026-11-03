@@ -179,7 +179,7 @@ function nteSplitBars() {
 
 function clusterScatter() {
     const el = canvas('chart-cluster');
-    if (!el) return;
+    if (!el || !data.cluster) return;
 
     new Chart(el, {
         type: 'scatter',

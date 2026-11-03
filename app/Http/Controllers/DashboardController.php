@@ -2,13 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Kawasan;
 use App\Models\Kelompok;
 use App\Models\Nte;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
+    public static function buildKawasanClusterData(Collection $kawasans, float $totalNte): Collection
+    {
+        $ranked = $kawasans
+            ->map(function ($kawasan) {
+                return [
+                    'nama_kawasan' => $kawasan->nama_kawasan,
+                    'total_nte' => (float) ($kawasan->nte?->total_nte ?? 0),
+                ];
+            })
+            ->sortByDesc('total_nte')
+            ->values();
+
+        $count = max(1, $ranked->count());
+        $tinggiBatas = (int) ceil($count / 3);
+        $sedangBatas = (int) ceil(($count * 2) / 3);
+
+        return $kawasans->map(function ($kawasan) use ($ranked, $tinggiBatas, $sedangBatas, $totalNte) {
+            $nilai = (float) ($kawasan->nte?->total_nte ?? 0);
+            $rankIndex = $ranked->search(function ($row) use ($kawasan, $nilai) {
+                return $row['nama_kawasan'] === $kawasan->nama_kawasan && abs((float) $row['total_nte'] - $nilai) < 0.01;
+            });
+
+            $rankIndex = $rankIndex === false ? $ranked->count() : $rankIndex;
+
+            if ($rankIndex < $tinggiBatas) {
+                $cluster = 'Tinggi';
+            } elseif ($rankIndex < $sedangBatas) {
+                $cluster = 'Sedang';
+            } else {
+                $cluster = 'Rendah';
+            }
+
+            return [
+                'label' => $kawasan->nama_kawasan,
+                'x' => round($nilai / 1e6, 1),
+                'y' => (int) $kawasan->jumlah_desa_sekitar,
+                'cluster' => $cluster,
+                'clusterColor' => match ($cluster) {
+                    'Tinggi' => '#16a34a',
+                    'Sedang' => '#f59e0b',
+                    default => '#ef4444',
+                },
+                'persentase' => $totalNte > 0 ? ($nilai / $totalNte) * 100 : 0,
+            ];
+        })->values();
+    }
+
     public function index()
     {
         $totalNte = Nte::sum('total_nte');
@@ -17,6 +65,7 @@ class DashboardController extends Controller
         $totalBantuan = Kelompok::sum('jumlah_bantuan');
 
         $kawasans = Kawasan::with('nte')->get();
+        $clusterData = self::buildKawasanClusterData($kawasans, (float) $totalNte);
         $analisisNte = $kawasans->map(function ($kawasan) use ($totalNte) {
             $total = (float) ($kawasan->nte?->total_nte ?? 0);
 
@@ -28,13 +77,14 @@ class DashboardController extends Controller
         })->sortByDesc('total_nte')->values();
         $kelompoks = Kelompok::with(['kawasan', 'desa'])->get();
 
-        return view('dashboard', compact('totalNte', 'jumlahKawasan', 'jumlahKelompok', 'totalBantuan', 'kawasans', 'kelompoks', 'analisisNte'));
+        return view('dashboard', compact('totalNte', 'jumlahKawasan', 'jumlahKelompok', 'totalBantuan', 'kawasans', 'kelompoks', 'analisisNte', 'clusterData'));
     }
 
     // Menampilkan Form Tambah Kelompok
     public function createKelompok()
     {
         $kawasans = Kawasan::all();
+
         return view('tambah_kelompok', compact('kawasans'));
     }
 

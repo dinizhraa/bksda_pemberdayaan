@@ -16,10 +16,9 @@
     </a>
 
     <nav class="flex flex-col gap-1">
-        <x-sidebar-link :href="route('dashboard')" icon="table-cells-large" :active="request()->routeIs('dashboard')">Ringkasan</x-sidebar-link>
+        <x-sidebar-link :href="route('dashboard')" icon="table-cells-large" :active="request()->routeIs('dashboard')">Dashboard</x-sidebar-link>
         <x-sidebar-link :href="route('dashboard').'#kelompok'" icon="people-group">Kelompok Binaan</x-sidebar-link>
-        <x-sidebar-link :href="route('dashboard').'#kawasan'" icon="mountain-sun">Kawasan Konservasi</x-sidebar-link>
-        <x-sidebar-link :href="route('dashboard').'#clustering'" icon="chart-simple">Data Mining</x-sidebar-link>
+        <x-sidebar-link :href="route('dashboard').'#kawasan'" icon="mountain-sun">Kawasan & NTE</x-sidebar-link>
         <x-sidebar-link :href="route('kelompok.create')" icon="plus" :active="request()->routeIs('kelompok.create')">Tambah Kelompok</x-sidebar-link>
         <x-sidebar-link :href="route('profile.edit')" icon="user-gear" :active="request()->routeIs('profile.*')">Profil</x-sidebar-link>
     </nav>
