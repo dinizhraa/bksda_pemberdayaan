@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kawasan;
 use App\Models\Kelompok;
 use App\Models\Nte;
+use App\Services\KawasanClusteringService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -57,7 +58,7 @@ class DashboardController extends Controller
         })->values();
     }
 
-    public function index()
+    public function index(KawasanClusteringService $clusteringService)
     {
         $totalNte = Nte::sum('total_nte');
         $jumlahKawasan = Kawasan::count();
@@ -66,6 +67,7 @@ class DashboardController extends Controller
 
         $kawasans = Kawasan::with('nte')->get();
         $clusterData = self::buildKawasanClusterData($kawasans, (float) $totalNte);
+        
         $analisisNte = $kawasans->map(function ($kawasan) use ($totalNte) {
             $total = (float) ($kawasan->nte?->total_nte ?? 0);
 
@@ -75,9 +77,27 @@ class DashboardController extends Controller
                 'persentase' => $total > 0 && $totalNte > 0 ? ($total / $totalNte) * 100 : 0,
             ];
         })->sortByDesc('total_nte')->values();
-        $kelompoks = Kelompok::with(['kawasan', 'desa'])->get();
 
-        return view('dashboard', compact('totalNte', 'jumlahKawasan', 'jumlahKelompok', 'totalBantuan', 'kawasans', 'kelompoks', 'analisisNte', 'clusterData'));
+        $kelompoks = Kelompok::with(['kawasan', 'desa'])->get();
+        
+        $clusterAnalysis = $clusteringService->cluster($kawasans->map(fn (Kawasan $kawasan) => [
+            'nama_kawasan' => $kawasan->nama_kawasan,
+            'total_nte' => $kawasan->nte?->total_nte,
+            'jumlah_desa_sekitar' => $kawasan->jumlah_desa_sekitar,
+            'jumlah_desa_difasilitasi' => $kawasan->jumlah_desa_difasilitasi,
+        ])->all());
+
+        return view('dashboard', compact(
+            'totalNte', 
+            'jumlahKawasan', 
+            'jumlahKelompok', 
+            'totalBantuan', 
+            'kawasans', 
+            'kelompoks', 
+            'analisisNte', 
+            'clusterData', 
+            'clusterAnalysis'
+        ));
     }
 
     // Menampilkan Form Tambah Kelompok

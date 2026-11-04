@@ -1,3 +1,7 @@
+{{-- Halaman utama (/) menampilkan landing page; /login tetap memakai form di bawah. Routing tidak diubah. --}}
+@if (request()->is('/'))
+    @include('landing')
+@else
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -45,3 +49,4 @@
         </div>
     </form>
 </x-guest-layout>
+@endif

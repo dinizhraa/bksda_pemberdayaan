@@ -8,3 +8,8 @@ Alpine.start();
 if (document.getElementById('dashboard-data')) {
     import('./dashboard');
 }
+
+// Interaksi landing page (scroll reveal, spotlight kartu, parallax hero, scrollspy).
+if (document.getElementById('landing')) {
+    import('./landing');
+}

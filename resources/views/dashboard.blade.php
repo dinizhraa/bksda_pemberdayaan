@@ -54,8 +54,12 @@
             'langsung' => $topDelapan->map(fn ($k) => round($k->nte->nte_langsung / 1e6, 1)),
             'tidakLangsung' => $topDelapan->map(fn ($k) => round($k->nte->nte_tidak_langsung / 1e6, 1)),
         ],
+<<<<<<< Updated upstream
         'cluster' => $clusterData,
+=======
+>>>>>>> Stashed changes
     ];
+    $charts['cluster'] = $clusterAnalysis;
 @endphp
 
 <x-app-layout>
@@ -346,15 +350,57 @@
         <x-glass-card id="clustering" class="scroll-mt-6">
             <header class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
+<<<<<<< Updated upstream
                     <h2 class="card-title">Analisis Clustering Kawasan Berdasarkan NTE</h2>
                     <p class="mt-0.5 text-xs text-ink-500">Pemetaan kawasan hasil proses data mining untuk melihat pola kontribusi NTE dan keterkaitan dengan jumlah desa penyangga.</p>
+=======
+                    <h2 class="card-title">Data Mining: K-Means Clustering Kawasan</h2>
+                    <p class="mt-0.5 text-xs text-ink-500">Fitur: Total NTE, jumlah desa sekitar, dan rasio desa difasilitasi. Data dinormalisasi dengan Min-Max sebelum pengelompokan.</p>
+>>>>>>> Stashed changes
                 </div>
                 <span class="chip chip-neutral px-3 py-1.5"><i class="fa-solid fa-brain" aria-hidden="true"></i> Data Mining</span>
             </header>
 
+<<<<<<< Updated upstream
             <div class="relative mt-5 h-80">
                 <canvas id="chart-cluster" role="img" aria-label="Diagram sebar kawasan berdasarkan total NTE dan jumlah desa"></canvas>
+=======
+            <div class="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                    <p class="text-xs text-ink-500">Data yang dianalisis</p>
+                    <p class="mt-1 text-lg font-bold">{{ $clusterAnalysis['sample_count'] }} kawasan</p>
+                    @if ($clusterAnalysis['excluded_count'] > 0)
+                        <p class="text-xs text-amber-700">{{ $clusterAnalysis['excluded_count'] }} data tidak valid dikeluarkan</p>
+                    @endif
+                </div>
+                <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                    <p class="text-xs text-ink-500">Jumlah cluster</p>
+                    <p class="mt-1 text-lg font-bold">K = {{ $clusterAnalysis['k'] }}</p>
+                    <p class="text-xs text-ink-500">K-Means, maksimal 100 iterasi</p>
+                </div>
+                <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                    <p class="text-xs text-ink-500">Validasi silhouette</p>
+                    <p class="mt-1 text-lg font-bold">{{ $clusterAnalysis['silhouette'] !== null ? number_format($clusterAnalysis['silhouette'], 3, ',', '.') : 'Belum tersedia' }}</p>
+                    <p class="text-xs text-ink-500">Rentang -1 sampai 1; makin tinggi umumnya makin terpisah</p>
+                </div>
+                @foreach ($clusterAnalysis['clusters'] as $cluster)
+                    <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                        <p class="text-xs text-ink-500">{{ $cluster['name'] }} ({{ $cluster['count'] }} kawasan)</p>
+                        <p class="mt-1 text-sm font-bold">NTE rata-rata Rp {{ number_format($cluster['mean_nte_million'], 1, ',', '.') }} juta</p>
+                        <p class="text-xs text-ink-500">Fasilitasi desa rata-rata {{ number_format($cluster['mean_coverage_percent'], 1, ',', '.') }}%</p>
+                    </div>
+                @endforeach
+>>>>>>> Stashed changes
             </div>
+
+            @if ($clusterAnalysis['status'] === 'ok')
+                <div class="relative h-80">
+                    <canvas id="chart-cluster" role="img" aria-label="Diagram sebar hasil K-Means berdasarkan total NTE, dengan warna berbeda untuk setiap cluster"></canvas>
+                </div>
+                <p class="mt-3 text-xs text-ink-500">Kelompok diurutkan menurut rerata NTE. Hasil bersifat eksploratif dan perlu ditafsirkan bersama kondisi lapangan; silhouette adalah validasi internal, bukan bukti sebab-akibat.</p>
+            @else
+                <div class="empty-state">Clustering belum dapat dijalankan: diperlukan sedikitnya tiga kawasan valid dengan pola fitur yang berbeda.</div>
+            @endif
         </x-glass-card>
 
     </div>
