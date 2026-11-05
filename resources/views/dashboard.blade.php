@@ -54,10 +54,7 @@
             'langsung' => $topDelapan->map(fn ($k) => round($k->nte->nte_langsung / 1e6, 1)),
             'tidakLangsung' => $topDelapan->map(fn ($k) => round($k->nte->nte_tidak_langsung / 1e6, 1)),
         ],
-<<<<<<< Updated upstream
         'cluster' => $clusterData,
-=======
->>>>>>> Stashed changes
     ];
     $charts['cluster'] = $clusterAnalysis;
 @endphp
