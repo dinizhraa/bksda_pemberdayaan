@@ -76,10 +76,8 @@ class DashboardController extends Controller
             ];
         })->sortByDesc('total_nte')->values();
         $kelompoks = Kelompok::with(['kawasan', 'desa'])->get();
-        $topKawasan = $analisisNte->take(3);
-        $clusterSummary = $clusterData->groupBy('cluster')->map(fn ($items) => $items->count());
 
-        return view('dashboard', compact('totalNte', 'jumlahKawasan', 'jumlahKelompok', 'totalBantuan', 'kawasans', 'kelompoks', 'analisisNte', 'clusterData', 'topKawasan', 'clusterSummary'));
+        return view('dashboard', compact('totalNte', 'jumlahKawasan', 'jumlahKelompok', 'totalBantuan', 'kawasans', 'kelompoks', 'analisisNte', 'clusterData'));
     }
 
     // Menampilkan Form Tambah Kelompok
@@ -104,8 +102,6 @@ class DashboardController extends Controller
         $request->validate([
             'nama_kelompok' => 'required|string|max:255',
             'kawasan_id' => 'required',
-            'kecamatan' => 'nullable|string|max:255',
-            'kabupaten' => 'nullable|string|max:255',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
@@ -113,8 +109,6 @@ class DashboardController extends Controller
 
         Kelompok::create([
             'kawasan_id' => $request->kawasan_id,
-            'kecamatan' => $request->kecamatan,
-            'kabupaten' => $request->kabupaten,
             'tahun_pembinaan' => 2026,
             'nama_kelompok' => $request->nama_kelompok,
             'nama_ketua' => $request->nama_ketua,
@@ -131,8 +125,6 @@ class DashboardController extends Controller
         $request->validate([
             'nama_kelompok' => 'required|string|max:255',
             'kawasan_id' => 'required',
-            'kecamatan' => 'nullable|string|max:255',
-            'kabupaten' => 'nullable|string|max:255',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
@@ -142,8 +134,6 @@ class DashboardController extends Controller
 
         $kelompok->update([
             'kawasan_id' => $request->kawasan_id,
-            'kecamatan' => $request->kecamatan,
-            'kabupaten' => $request->kabupaten,
             'nama_kelompok' => $request->nama_kelompok,
             'nama_ketua' => $request->nama_ketua,
             'no_hp' => $request->no_hp,

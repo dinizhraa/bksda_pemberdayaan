@@ -180,19 +180,22 @@ function nteSplitBars() {
 function clusterScatter() {
     const el = canvas('chart-cluster');
     if (!el || !data.cluster) return;
+    if (!el || data.cluster.status !== 'ok') return;
+
+    const colors = ['#7fb4f0', '#1d9e92', '#efad52'];
 
     new Chart(el, {
         type: 'scatter',
         data: {
-            datasets: [{
-                label: 'Pemetaan Kawasan Konservasi',
-                data: data.cluster,
-                backgroundColor: 'rgba(29, 158, 146, 0.75)',
+            datasets: data.cluster.clusters.map((cluster, index) => ({
+                label: cluster.name,
+                data: data.cluster.points.filter((point) => point.cluster === cluster.name),
+                backgroundColor: colors[index % colors.length],
                 borderColor: '#ffffff',
                 borderWidth: 2,
                 pointRadius: 8,
                 pointHoverRadius: 11,
-            }],
+            })),
         },
         options: {
             responsive: true,
@@ -217,7 +220,11 @@ function clusterScatter() {
                     ...tooltip,
                     callbacks: {
                         title: (items) => items[0].raw.label,
-                        label: (c) => [` Total NTE : ${juta(c.raw.x)}`, ` Desa Penyangga : ${c.raw.y} Desa`],
+                        label: (c) => [
+                            ` Cluster: ${c.dataset.label}`,
+                            ` Total NTE: ${juta(c.raw.x)}`,
+                            ` Desa sekitar: ${c.raw.y} desa`,
+                        ],
                     },
                 },
             },
