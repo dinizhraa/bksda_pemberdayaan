@@ -60,8 +60,8 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="page-title">Data Mining | Kerja Praktek | Manajemen Data</h1>
-        <p class="page-sub">Selamat datang, {{ strtok(Auth::user()->name, ' ') }}! Dashboard ini menampilkan analisis kawasan konservasi berbasis data untuk mendukung proses data mining, kerja praktek, dan manajemen data BKSDA Sulawesi Tengah.</p>
+        <h1 class="page-title">Data Mining BKSDA Sulawesi Tengah</h1>
+        <p class="page-sub">Selamat datang, {{ strtok(Auth::user()->name, ' ') }}! Dashboard ini menampilkan analisis kawasan konservasi berbasis data mining sesuai pendekatan RPS mata kuliah Data Mining, mulai dari preprocessing, clustering, hingga interpretasi hasil per wilayah.</p>
     </x-slot>
 
     <x-slot name="actions">
@@ -110,8 +110,28 @@
                     <p class="text-sm text-slate-700">Interpretasi hasil analisis untuk menilai pola wilayah, kontribusi, dan prioritas pemberdayaan masyarakat.</p>
                 </div>
                 <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-3">
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">04. Proyek Data Mining</p>
-                    <p class="text-sm text-slate-700">Hasil visualisasi ini menjadi dasar laporan kerja praktek dan manajemen data berbasis bukti.</p>
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">04. Insight</p>
+                    <p class="text-sm text-slate-700">Hasil visualisasi ini menjadi dasar laporan kerja praktek dan strategi pengelolaan data berbasis bukti.</p>
+                </div>
+            </div>
+        </x-glass-card>
+
+        <x-glass-card title="Insight Utama Hasil Analisis Data Mining">
+            <div class="grid gap-3 md:grid-cols-3">
+                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+                    <p class="text-xs uppercase tracking-[0.18em] text-slate-500">Prioritas utama</p>
+                    <p class="mt-2 text-lg font-bold text-slate-800">{{ $topKawasan->first()['nama_kawasan'] ?? '-' }}</p>
+                    <p class="mt-1 text-sm text-slate-600">Kontribusi tertinggi terhadap total NTE: {{ number_format($topKawasan->first()['persentase'] ?? 0, 2, ',', '.') }}%</p>
+                </div>
+                <div class="rounded-2xl border border-amber-200 bg-amber-50/80 p-4">
+                    <p class="text-xs uppercase tracking-[0.18em] text-amber-700">Cluster dominan</p>
+                    <p class="mt-2 text-lg font-bold text-amber-800">{{ $clusterSummary->sortDesc()->keys()->first() ?? 'Sedang' }}</p>
+                    <p class="mt-1 text-sm text-slate-600">Jumlah kawasan: {{ $clusterSummary->sortDesc()->values()->first() ?? 0 }} kawasan</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4">
+                    <p class="text-xs uppercase tracking-[0.18em] text-emerald-700">Total data terolah</p>
+                    <p class="mt-2 text-lg font-bold text-emerald-800">{{ $jumlahKawasan ?? 0 }} kawasan</p>
+                    <p class="mt-1 text-sm text-slate-600">{{ $jumlahKelompok ?? 0 }} kelompok binaan dan {{ $kelompoks->sum('jumlah_anggota') ?? 0 }} anggota tercatat.</p>
                 </div>
             </div>
         </x-glass-card>
@@ -282,11 +302,18 @@
                     <thead>
                         <tr>
                             <th class="w-14">No</th>
+                            <th>Tahun</th>
+                            <th>Kawasan</th>
+                            <th>Desa</th>
+                            <th>Kecamatan</th>
+                            <th>Kabupaten</th>
                             <th>Nama Kelompok</th>
-                            <th>Kawasan Konservasi</th>
-                            <th>Ketua & Kontak</th>
+                            <th>Nama Ketua</th>
+                            <th>No HP</th>
                             <th>Jenis Usaha</th>
-                            <th>Nilai Bantuan</th>
+                            <th>SK Kelompok</th>
+                            <th>Anggota Kelompok</th>
+                            <th>Jumlah Bantuan</th>
                             <th class="w-20 text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -294,6 +321,13 @@
                         @forelse ($kelompoks as $index => $kelompok)
                             <tr>
                                 <td class="text-ink-500">{{ $index + 1 }}</td>
+                                <td>{{ $kelompok->tahun_pembinaan ?? '-' }}</td>
+                                <td>
+                                    <span class="tag"><i class="fa-solid fa-location-dot text-rose-500" aria-hidden="true"></i>{{ $kelompok->kawasan->nama_kawasan ?? '-' }}</span>
+                                </td>
+                                <td>{{ $kelompok->desa?->nama_desa ?? '-' }}</td>
+                                <td>{{ $kelompok->kecamatan ?? '-' }}</td>
+                                <td>{{ $kelompok->kabupaten ?? '-' }}</td>
                                 <td>
                                     <div class="flex items-center gap-3">
                                         <span class="avatar">{{ mb_strtoupper(mb_substr($kelompok->nama_kelompok ?? 'K', 0, 1)) }}</span>
@@ -303,14 +337,11 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <span class="tag"><i class="fa-solid fa-location-dot text-rose-500" aria-hidden="true"></i>{{ $kelompok->kawasan->nama_kawasan ?? '-' }}</span>
-                                </td>
-                                <td>
-                                    <p class="font-medium">{{ $kelompok->nama_ketua }}</p>
-                                    <p class="text-xs text-ink-500"><i class="fa-solid fa-phone mr-1" aria-hidden="true"></i>{{ $kelompok->no_hp ?? '-' }}</p>
-                                </td>
-                                <td><span class="tag">{{ $kelompok->jenis_usaha }}</span></td>
+                                <td>{{ $kelompok->nama_ketua ?? '-' }}</td>
+                                <td>{{ $kelompok->no_hp ?? '-' }}</td>
+                                <td><span class="tag">{{ $kelompok->jenis_usaha ?? '-' }}</span></td>
+                                <td class="max-w-[180px] break-words">{{ $kelompok->sk_kelompok ?? '-' }}</td>
+                                <td>{{ $kelompok->jumlah_anggota ?? 0 }}</td>
                                 <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
                                 <td class="text-right">
                                     <div class="flex items-center justify-end gap-2">
@@ -330,7 +361,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7">
+                                <td colspan="14">
                                     <div class="empty-state">
                                         <i class="fa-solid fa-folder-open text-2xl text-ink-400" aria-hidden="true"></i>
                                         Belum ada data kelompok binaan yang terdaftar.

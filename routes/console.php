@@ -33,6 +33,105 @@ if (! function_exists('parseNumber')) {
     }
 }
 
+if (! function_exists('simpleKMeansCluster')) {
+    function simpleKMeansCluster(array $records, int $clusterCount = 3): array
+    {
+        if ($clusterCount < 1 || $records === []) {
+            return $records;
+        }
+
+        $maxNte = max(array_map(fn ($record) => (float) ($record['total_nte'] ?? 0), $records));
+        $maxDesa = max(array_map(fn ($record) => (int) ($record['jumlah_desa_sekitar'] ?? 0), $records));
+
+        foreach ($records as $index => $record) {
+            $records[$index]['feature_nte'] = $maxNte > 0 ? ((float) ($record['total_nte'] ?? 0)) / $maxNte : 0;
+            $records[$index]['feature_desa'] = $maxDesa > 0 ? ((int) ($record['jumlah_desa_sekitar'] ?? 0)) / $maxDesa : 0;
+        }
+
+        $centroids = [];
+        $sorted = collect($records)->sortByDesc('total_nte')->values()->all();
+        $step = max(1, intdiv(count($sorted), $clusterCount));
+
+        for ($i = 0; $i < $clusterCount; $i++) {
+            $pivot = $sorted[min(count($sorted) - 1, $i * $step)]['feature_nte'] ?? 0;
+            $centroids[] = [
+                'x' => $pivot,
+                'y' => (($i + 1) / max(1, $clusterCount)),
+            ];
+        }
+
+        for ($iteration = 0; $iteration < 15; $iteration++) {
+            $assignments = array_fill(0, count($records), 0);
+
+            foreach ($records as $index => $record) {
+                $best = 0;
+                $bestDistance = PHP_FLOAT_MAX;
+
+                foreach ($centroids as $centroidIndex => $centroid) {
+                    $distance = sqrt(
+                        pow(($record['feature_nte'] ?? 0) - $centroid['x'], 2) +
+                        pow(($record['feature_desa'] ?? 0) - $centroid['y'], 2)
+                    );
+
+                    if ($distance < $bestDistance) {
+                        $bestDistance = $distance;
+                        $best = $centroidIndex;
+                    }
+                }
+
+                $assignments[$index] = $best;
+            }
+
+            $newCentroids = [];
+            for ($clusterIndex = 0; $clusterIndex < $clusterCount; $clusterIndex++) {
+                $items = [];
+                foreach ($records as $index => $record) {
+                    if (($assignments[$index] ?? 0) === $clusterIndex) {
+                        $items[] = $record;
+                    }
+                }
+
+                if ($items === []) {
+                    $newCentroids[$clusterIndex] = $centroids[$clusterIndex] ?? ['x' => 0, 'y' => 0];
+                    continue;
+                }
+
+                $sumNte = array_sum(array_map(fn ($item) => (float) ($item['feature_nte'] ?? 0), $items));
+                $sumDesa = array_sum(array_map(fn ($item) => (float) ($item['feature_desa'] ?? 0), $items));
+
+                $newCentroids[$clusterIndex] = [
+                    'x' => $sumNte / count($items),
+                    'y' => $sumDesa / count($items),
+                ];
+            }
+
+            $centroids = $newCentroids;
+        }
+
+        $clusterLabels = ['Rendah', 'Sedang', 'Tinggi'];
+        foreach ($records as $index => $record) {
+            $best = 0;
+            $bestDistance = PHP_FLOAT_MAX;
+
+            foreach ($centroids as $centroidIndex => $centroid) {
+                $distance = sqrt(
+                    pow(($record['feature_nte'] ?? 0) - $centroid['x'], 2) +
+                    pow(($record['feature_desa'] ?? 0) - $centroid['y'], 2)
+                );
+
+                if ($distance < $bestDistance) {
+                    $bestDistance = $distance;
+                    $best = $centroidIndex;
+                }
+            }
+
+            $records[$index]['cluster'] = $clusterLabels[$best] ?? 'Rendah';
+        }
+
+        return $records;
+    }
+}
+
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
@@ -157,6 +256,8 @@ Artisan::command('data:import {type} {path} {--truncate} {--dry-run}', function 
         if ($type === 'kelompok') {
             $namaKawasan = trim((string) ($record['nama_kawasan'] ?? $record['kawasan'] ?? ''));
             $namaDesa = trim((string) ($record['nama_desa'] ?? $record['desa'] ?? ''));
+            $kecamatan = trim((string) ($record['kecamatan'] ?? ''));
+            $kabupaten = trim((string) ($record['kabupaten'] ?? ''));
             $namaKelompok = trim((string) ($record['nama_kelompok'] ?? $record['kelompok'] ?? ''));
 
             if ($namaKawasan === '' || $namaKelompok === '') {
@@ -176,6 +277,8 @@ Artisan::command('data:import {type} {path} {--truncate} {--dry-run}', function 
             $payload = [
                 'kawasan_id' => $kawasan->id,
                 'desa_id' => $desa?->id,
+                'kecamatan' => $kecamatan !== '' ? $kecamatan : null,
+                'kabupaten' => $kabupaten !== '' ? $kabupaten : null,
                 'tahun_pembinaan' => (int) round(parseNumber($record['tahun_pembinaan'] ?? $record['tahun'] ?? 0)),
                 'nama_kelompok' => $namaKelompok,
                 'nama_ketua' => trim((string) ($record['nama_ketua'] ?? $record['ketua'] ?? '')) ?: null,
@@ -207,26 +310,32 @@ Artisan::command('data:import {type} {path} {--truncate} {--dry-run}', function 
 
 Artisan::command('data:mine {--csv}', function () {
     $totalNte = Nte::sum('total_nte');
-    $rows = Kawasan::with('nte')->get()->map(function ($kawasan) use ($totalNte) {
+    $rows = Kawasan::with(['nte', 'desas'])->get()->map(function ($kawasan) use ($totalNte) {
         $total = (float) ($kawasan->nte?->total_nte ?? 0);
 
         return [
             'ranking' => 0,
             'nama_kawasan' => $kawasan->nama_kawasan,
+            'fungsi_kawasan' => $kawasan->fungsi_kawasan,
+            'jumlah_desa_sekitar' => (int) ($kawasan->jumlah_desa_sekitar ?? $kawasan->desas()->count()),
             'total_nte' => $total,
             'kontribusi' => $totalNte > 0 ? ($total / $totalNte) * 100 : 0,
         ];
-    })->sortByDesc('total_nte')->values()->map(function ($row, $index) {
+    })->filter(fn ($row) => (float) ($row['total_nte'] ?? 0) > 0)->values()->all();
+
+    $rows = simpleKMeansCluster($rows, 3);
+    $rows = collect($rows)->sortByDesc('total_nte')->values()->map(function ($row, $index) {
         $row['ranking'] = $index + 1;
 
         return $row;
     });
 
     $this->table(
-        ['Ranking', 'Kawasan', 'Total NTE', 'Kontribusi'],
+        ['Ranking', 'Kawasan', 'Cluster', 'Total NTE', 'Kontribusi'],
         $rows->map(fn ($row) => [
             $row['ranking'],
             $row['nama_kawasan'],
+            $row['cluster'],
             'Rp '.number_format($row['total_nte'], 0, ',', '.'),
             number_format($row['kontribusi'], 2, ',', '.').'%',
         ])->all()
@@ -240,12 +349,15 @@ Artisan::command('data:mine {--csv}', function () {
         }
 
         $handle = fopen($path, 'w');
-        fputcsv($handle, ['ranking', 'nama_kawasan', 'total_nte', 'kontribusi_persen']);
+        fputcsv($handle, ['ranking', 'nama_kawasan', 'fungsi_kawasan', 'jumlah_desa_sekitar', 'cluster', 'total_nte', 'kontribusi_persen']);
 
         foreach ($rows as $row) {
             fputcsv($handle, [
                 $row['ranking'],
                 $row['nama_kawasan'],
+                $row['fungsi_kawasan'],
+                $row['jumlah_desa_sekitar'],
+                $row['cluster'],
                 (float) $row['total_nte'],
                 number_format($row['kontribusi'], 2, '.', ''),
             ]);
@@ -253,8 +365,8 @@ Artisan::command('data:mine {--csv}', function () {
 
         fclose($handle);
 
-        $this->info('Ringkasan data mining disimpan di: '.$path);
+        $this->info('Ringkasan data mining dan clustering kawasan disimpan di: '.$path);
     }
 
-    $this->info('Data mining NTE berhasil dihitung dari '.count($rows).' kawasan.');
-})->purpose('Menganalisis dan merangkum kontribusi NTE per kawasan untuk data mining');
+    $this->info('Data mining NTE dan clustering kawasan berhasil dihitung dari '.count($rows).' kawasan.');
+})->purpose('Menganalisis dan mengelompokkan kontribusi NTE per kawasan untuk proyek data mining');

@@ -41,8 +41,20 @@
             </div>
 
             <div>
-                <x-input-label for="jenis_usaha" value="Jenis Usaha / Produk Unggulan" />
-                <x-text-input id="jenis_usaha" name="jenis_usaha" type="text" class="mt-1.5 block w-full" :value="old('jenis_usaha', $kelompok->jenis_usaha ?? '')" required placeholder="Contoh: Lebah Madu / Ekowisata" />
+                <x-input-label for="kecamatan" value="Kecamatan" />
+                <x-text-input id="kecamatan" name="kecamatan" type="text" class="mt-1.5 block w-full" :value="old('kecamatan', $kelompok->kecamatan ?? '')" placeholder="Contoh: Bualemo" />
+                <x-input-error :messages="$errors->get('kecamatan')" class="mt-1.5" />
+            </div>
+
+            <div>
+                <x-input-label for="kabupaten" value="Kabupaten" />
+                <x-text-input id="kabupaten" name="kabupaten" type="text" class="mt-1.5 block w-full" :value="old('kabupaten', $kelompok->kabupaten ?? '')" placeholder="Contoh: Banggai" />
+                <x-input-error :messages="$errors->get('kabupaten')" class="mt-1.5" />
+            </div>
+
+            <div>
+                <x-input-label for="jenis_usaha" value="Jenis Usaha" />
+                <x-text-input id="jenis_usaha" name="jenis_usaha" type="text" class="mt-1.5 block w-full" :value="old('jenis_usaha', $kelompok->jenis_usaha ?? '')" required placeholder="Contoh: Budidaya ikan" />
                 <x-input-error :messages="$errors->get('jenis_usaha')" class="mt-1.5" />
             </div>
 
