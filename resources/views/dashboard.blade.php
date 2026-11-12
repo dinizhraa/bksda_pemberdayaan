@@ -176,7 +176,6 @@
                                 <span class="legend-dot" style="background-color: {{ $palet[$loop->index] }}"></span>
                                 <span class="min-w-0 flex-1 truncate text-ink-700" title="{{ $nama }}">{{ $nama }}</span>
                                 <span class="font-semibold"><x-rupiah :value="$nilai" /></span>
-                                <span class="text-ink-500">({{ $persen($nilai, $totalUsaha) }}%)</span>
                             </li>
                         @endforeach
                     </ul>
@@ -258,7 +257,6 @@
                             <p class="text-xs text-ink-500">{{ $k->jumlah_desa_sekitar }} desa sekitar</p>
                         </div>
                         <p class="shrink-0 text-sm font-semibold"><x-rupiah :value="$k->nte->total_nte" /></p>
-                        <span class="chip chip-neutral shrink-0">{{ $persen($k->nte->total_nte, $totalNte) }}%</span>
                     </div>
                 @empty
                     <div class="empty-state">Belum ada data NTE kawasan.</div>
@@ -327,8 +325,8 @@
                                     <span class="tag"><i class="fa-solid fa-location-dot text-rose-500" aria-hidden="true"></i>{{ $kelompok->kawasan->nama_kawasan ?? '-' }}</span>
                                 </td>
                                 <td>{{ $kelompok->desa?->nama_desa ?? '-' }}</td>
-                                <td>{{ $kelompok->kecamatan ?? '-' }}</td>
-                                <td>{{ $kelompok->kabupaten ?? '-' }}</td>
+                                <td>{{ $kelompok->kecamatan ?? $kelompok->desa?->kecamatan ?? '-' }}</td>
+                                <td>{{ $kelompok->kabupaten ?? $kelompok->desa?->kabupaten ?? '-' }}</td>
                                 <td>
                                     <div class="flex items-center gap-3">
                                         <span class="avatar">{{ mb_strtoupper(mb_substr($kelompok->nama_kelompok ?? 'K', 0, 1)) }}</span>
