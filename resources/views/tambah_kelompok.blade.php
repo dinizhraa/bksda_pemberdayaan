@@ -53,6 +53,19 @@
             </div>
 
             <div>
+                <x-input-label for="latitude" value="Latitude" />
+                <x-text-input id="latitude" name="latitude" type="number" step="any" min="-90" max="90" class="mt-1.5 block w-full" :value="old('latitude', $kelompok->latitude ?? '')" placeholder="Contoh: -0.9012" />
+                <x-input-error :messages="$errors->get('latitude')" class="mt-1.5" />
+            </div>
+
+            <div>
+                <x-input-label for="longitude" value="Longitude" />
+                <x-text-input id="longitude" name="longitude" type="number" step="any" min="-180" max="180" class="mt-1.5 block w-full" :value="old('longitude', $kelompok->longitude ?? '')" placeholder="Contoh: 119.8701" />
+                <x-input-error :messages="$errors->get('longitude')" class="mt-1.5" />
+            </div>
+            <p class="text-xs text-ink-500 sm:col-span-2">Koordinat bersifat opsional, tetapi latitude dan longitude harus diisi berpasangan. Salin koordinat desimal dari Google Maps untuk menentukan titik.</p>
+
+            <div>
                 <x-input-label for="jenis_usaha" value="Jenis Usaha" />
                 <x-text-input id="jenis_usaha" name="jenis_usaha" type="text" class="mt-1.5 block w-full" :value="old('jenis_usaha', $kelompok->jenis_usaha ?? '')" required placeholder="Contoh: Budidaya ikan" />
                 <x-input-error :messages="$errors->get('jenis_usaha')" class="mt-1.5" />

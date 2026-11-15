@@ -6,6 +6,7 @@ use App\Models\Kawasan;
 use App\Models\Kelompok;
 use App\Models\Nte;
 use App\Services\KawasanClusteringService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -234,6 +235,11 @@ class DashboardController extends Controller
         return view('tambah_kelompok', compact('kawasans'));
     }
 
+    public function map(): View
+    {
+        return view('peta-kelompok');
+    }
+
     public function editKelompok($id)
     {
         $kelompok = Kelompok::findOrFail($id);
@@ -246,24 +252,27 @@ class DashboardController extends Controller
     {
         $request->validate([
             'nama_kelompok' => 'required|string|max:255',
-            'kawasan_id' => 'required',
+            'kawasan_id' => 'required|exists:kawasans,id',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
+            'latitude' => 'nullable|numeric|between:-90,90|required_with:longitude',
+            'longitude' => 'nullable|numeric|between:-180,180|required_with:latitude',
         ]);
 
         Kelompok::create([
             'kawasan_id' => $request->kawasan_id,
             'tahun_pembinaan' => $request->tahun_pembinaan ?? 2026,
-            'desa' => $request->desa,
             'kecamatan' => $request->kecamatan,
             'kabupaten' => $request->kabupaten,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'nama_kelompok' => $request->nama_kelompok,
             'nama_ketua' => $request->nama_ketua,
             'no_hp' => $request->no_hp,
             'jenis_usaha' => $request->jenis_usaha,
             'sk_kelompok' => $request->sk_kelompok,
-            'anggota' => $request->anggota,
+            'jumlah_anggota' => $request->input('jumlah_anggota', 0),
             'jumlah_bantuan' => $request->jumlah_bantuan,
         ]);
 
@@ -274,25 +283,28 @@ class DashboardController extends Controller
     {
         $request->validate([
             'nama_kelompok' => 'required|string|max:255',
-            'kawasan_id' => 'required',
+            'kawasan_id' => 'required|exists:kawasans,id',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
+            'latitude' => 'nullable|numeric|between:-90,90|required_with:longitude',
+            'longitude' => 'nullable|numeric|between:-180,180|required_with:latitude',
         ]);
 
         $kelompok = Kelompok::findOrFail($id);
         $kelompok->update([
             'kawasan_id' => $request->kawasan_id,
             'tahun_pembinaan' => $request->tahun_pembinaan ?? $kelompok->tahun_pembinaan,
-            'desa' => $request->desa,
             'kecamatan' => $request->kecamatan,
             'kabupaten' => $request->kabupaten,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'nama_kelompok' => $request->nama_kelompok,
             'nama_ketua' => $request->nama_ketua,
             'no_hp' => $request->no_hp,
             'jenis_usaha' => $request->jenis_usaha,
             'sk_kelompok' => $request->sk_kelompok,
-            'anggota' => $request->anggota,
+            'jumlah_anggota' => $request->input('jumlah_anggota', $kelompok->jumlah_anggota),
             'jumlah_bantuan' => $request->jumlah_bantuan,
         ]);
 

@@ -8,6 +8,7 @@
         <title>{{ config('app.name', 'BKSDA Sulawesi Tengah') }}</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @stack('styles')
     </head>
     <body class="app-backdrop">
         <div x-data="{ sidebar: false }" @keydown.escape.window="sidebar = false" class="min-h-screen p-3 sm:p-4">
@@ -39,5 +40,6 @@
                 </div>
             </div>
         </div>
+        @stack('scripts')
     </body>
 </html>

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController; // Tambahkan baris ini
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route; // Tambahkan baris ini
 
 Route::get('/', function () {
     return view('auth.login');
@@ -10,7 +10,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+    Route::get('/peta-kelompok', [DashboardController::class, 'map'])->name('kelompok.map');
+
     // Route Kelompok Binaan
     Route::get('/kelompok/tambah', [DashboardController::class, 'createKelompok'])->name('kelompok.create');
     Route::get('/kelompok/{id}/edit', [DashboardController::class, 'editKelompok'])->name('kelompok.edit');

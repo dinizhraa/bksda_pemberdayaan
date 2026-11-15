@@ -13,3 +13,7 @@ if (document.getElementById('dashboard-data')) {
 if (document.getElementById('landing')) {
     import('./landing');
 }
+
+if (document.getElementById('group-map')) {
+    import('./map');
+}
