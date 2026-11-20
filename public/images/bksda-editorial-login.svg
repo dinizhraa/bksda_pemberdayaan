@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Petugas BKSDA mengelola kelompok binaan</title>
+  <desc id="desc">Ilustrasi editorial dua petugas berdiskusi di ruang kerja konservasi dengan laptop, dokumen, peta, grafik, dan tanaman</desc>
+  <style>
+    @keyframes float-card {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -5px; }
+    }
+
+    @keyframes person-shift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    @keyframes leaf-move {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    @keyframes bar-rise {
+      from { transform: scaleY(.55); opacity: .65; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+    .floating-card {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: float-card 5.8s ease-in-out infinite;
+    }
+
+    .floating-card.delay {
+      animation-delay: -2.4s;
+    }
+
+    .petugas-left {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: person-shift 5.4s ease-in-out infinite;
+    }
+
+    .petugas-right {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: person-shift 6s ease-in-out -2.2s infinite;
+    }
+
+    .plant-leaves {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: leaf-move 5s ease-in-out infinite;
+    }
+
+    .growth-bar {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: bar-rise .9s cubic-bezier(.2, .7, .2, 1) both;
+    }
+
+    .growth-bar.delay-1 { animation-delay: .12s; }
+    .growth-bar.delay-2 { animation-delay: .24s; }
+    .growth-bar.delay-3 { animation-delay: .36s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="glass" x1="88" y1="110" x2="852" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D6F0E3" stop-opacity=".82"/>
+      <stop offset="1" stop-color="#7AB8A0" stop-opacity=".22"/>
+    </linearGradient>
+    <linearGradient id="desk" x1="350" y1="418" x2="690" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9B78E"/>
+      <stop offset="1" stop-color="#BD8064"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="298" y1="296" x2="394" y2="442" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F675F"/>
+      <stop offset="1" stop-color="#0C423E"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="605" y1="300" x2="707" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F2E6"/>
+      <stop offset="1" stop-color="#D8E5D7"/>
+    </linearGradient>
+    <filter id="card-shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#062820" flood-opacity=".22"/>
+    </filter>
+    <filter id="soft-shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#062820" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="484" cy="585" rx="407" ry="28" fill="#062820" opacity=".22"/>
+
+  <g opacity=".9">
+    <path d="M56 128c0-23 18-41 41-41h766c23 0 41 18 41 41v355H56V128Z" fill="url(#glass)" stroke="#D7EEE3" stroke-opacity=".48" stroke-width="2"/>
+    <path d="M92 114v352M235 100v365M795 99v368M854 117v350" stroke="#D9F0E5" stroke-opacity=".45" stroke-width="10"/>
+    <path d="M67 286h826M67 390h826" stroke="#D9F0E5" stroke-opacity=".25" stroke-width="5"/>
+    <path d="M88 357c78-64 132-60 190-29 55 30 95 26 146-15 58-47 97-40 152-7 54 32 105 27 206-22v177H88V357Z" fill="#65A68A" opacity=".3"/>
+    <path d="M91 399c77-54 130-40 192-11 60 29 105 12 158-15 73-36 116-6 164 11 75 27 129-5 177-29v110H91V399Z" fill="#236A54" opacity=".44"/>
+    <path d="M131 319c-5-21 4-36 24-44 12 22 5 38-24 44Zm58-11c1-26 13-39 36-39 1 25-11 38-36 39Zm566 19c-3-22 8-36 29-40 9 23 0 37-29 40Z" fill="#34785E" opacity=".76"/>
+    <path d="M135 320v82m55-94v97m567-70v68" stroke="#4B785F" stroke-opacity=".7" stroke-width="8" stroke-linecap="round"/>
+    <path d="M252 147c15-14 29-14 44 0-15-6-29-6-44 0Zm550 15c12-11 24-11 36 0-12-5-24-5-36 0Z" fill="#EAF5E8" opacity=".8"/>
+  </g>
+
+  <g class="floating-card" filter="url(#card-shadow)" transform="translate(88 72)">
+    <rect width="206" height="114" rx="18" fill="#FAF8EF"/>
+    <text x="18" y="27" fill="#315B4B" font-family="Arial, sans-serif" font-size="12" font-weight="700">PERKEMBANGAN KELOMPOK</text>
+    <text x="18" y="48" fill="#809489" font-family="Arial, sans-serif" font-size="10">Capaian pendampingan</text>
+    <path d="M20 88h165" stroke="#DCE8DE" stroke-width="1"/>
+    <path d="M26 81v-13" stroke="#79B99B" stroke-width="12" stroke-linecap="round" class="growth-bar"/>
+    <path d="M57 81V57" stroke="#4F9B7B" stroke-width="12" stroke-linecap="round" class="growth-bar delay-1"/>
+    <path d="M88 81V65" stroke="#A8C98B" stroke-width="12" stroke-linecap="round" class="growth-bar delay-2"/>
+    <path d="M119 81V47" stroke="#317D65" stroke-width="12" stroke-linecap="round" class="growth-bar delay-3"/>
+    <path d="M150 81V38" stroke="#D9A56F" stroke-width="12" stroke-linecap="round" class="growth-bar delay-3"/>
+    <path d="m22 63 33-10 30 9 34-21 39-9" stroke="#A66F53" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="158" cy="31" r="13" fill="#E4F0E2"/>
+    <path d="M158 38V24m0 7c-5-2-7-5-7-9 5 1 8 4 7 9Zm1 3c5-2 7-6 7-10-5 2-8 5-7 10Z" fill="#4A8B6B"/>
+  </g>
+
+  <g class="floating-card delay" filter="url(#card-shadow)" transform="translate(702 85)">
+    <rect width="181" height="135" rx="18" fill="#F9F7EC"/>
+    <text x="17" y="27" fill="#315B4B" font-family="Arial, sans-serif" font-size="12" font-weight="700">KAWASAN BINAAN</text>
+    <rect x="14" y="39" width="153" height="78" rx="11" fill="#DDECE0"/>
+    <path d="M17 90c21-27 38-22 52-7 13 14 26 10 39-13 13-22 28-23 57-1v45H17V90Z" fill="#9DC4A3"/>
+    <path d="M17 103c18-14 32-8 48 2 17 10 29 1 42-13 17-17 31-4 58 2v23H17v-14Z" fill="#4F8B69"/>
+    <path d="M83 64c0-8 6-14 14-14s14 6 14 14c0 11-14 25-14 25S83 75 83 64Z" fill="#C77B5E"/>
+    <circle cx="97" cy="64" r="5" fill="#FFF9EC"/>
+    <path d="M16 126h84m9 0h38" stroke="#A3BDA8" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="151" cy="126" r="3" fill="#D3A767"/>
+  </g>
+
+  <g class="floating-card" filter="url(#soft-shadow)" transform="translate(380 58)">
+    <rect width="188" height="71" rx="17" fill="#FFFDF5"/>
+    <circle cx="28" cy="35" r="17" fill="#E4F0E2"/>
+    <path d="M28 45V28m0 6c-6-2-9-6-9-11 6 1 10 5 9 11Zm2 5c6-3 9-7 9-13-6 2-10 6-9 13Z" fill="#438264"/>
+    <text x="56" y="30" fill="#315B4B" font-family="Arial, sans-serif" font-size="12" font-weight="700">PENDAMPINGAN AKTIF</text>
+    <rect x="56" y="40" width="88" height="5" rx="2.5" fill="#D7E5D7"/>
+    <rect x="56" y="51" width="61" height="4" rx="2" fill="#B5CDB8"/>
+    <circle cx="159" cy="47" r="15" fill="#F0DBB7"/>
+    <path d="m152 47 5 5 10-12" stroke="#9D7048" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g class="petugas-left">
+    <ellipse cx="352" cy="512" rx="70" ry="15" fill="#0C3B30" opacity=".24"/>
+    <path d="m317 432-9 90h28l23-83m10-4 31 88h29l-16-100" fill="#334F43"/>
+    <path d="m309 516 36 1 10 14h-49c-6-4-4-10 3-15Zm85 1 26-4 14 15h-47c-6-3-3-8 7-11Z" fill="#E4E6D8"/>
+    <path d="M312 294c17-17 56-23 82-6 21 14 24 61 19 107l-8 54H300l4-74c1-42-9-63 8-81Z" fill="url(#coat)"/>
+    <path d="M336 288c5 13 12 21 25 21 14 0 24-8 28-20l-5-18h-44l-4 17Z" fill="#D89D75"/>
+    <path d="M319 288c-10-25-5-59 13-76 21-20 54-13 67 8 13 21 7 54-5 70l-12-16-6-29c-19 8-37 10-56 4l-1 35Z" fill="#9D5E43"/>
+    <path d="M319 230c4-26 23-39 46-37 20 1 34 14 37 34-18-8-34-12-53-5-11 4-20 9-30 8Z" fill="#B8704E"/>
+    <path d="M327 249c9-7 18-10 29-10 13 0 22 4 31 11l-2 25c-2 16-14 28-29 28-16 0-28-14-29-30v-24Z" fill="#DCA27B"/>
+    <path d="M330 251c5-5 12-7 19-6m23 2c5-1 10 0 14 4" stroke="#653F34" stroke-width="3" stroke-linecap="round"/>
+    <path d="M337 263h3m28 0h3" stroke="#243D36" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M358 263v12l-5 2" stroke="#B97859" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M348 285c6 4 13 4 19-1" stroke="#8E4E43" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M338 309h26l-13 18-13-18Z" fill="#F0EBDD"/>
+    <path d="m338 309 13 18 13-18" stroke="#F0EBDD" stroke-width="2"/>
+    <path d="M323 316h14v19h-14z" fill="#D6A75F"/>
+    <path d="M329 320v10m-3-5h7" stroke="#F8F1DB" stroke-width="2"/>
+    <path d="m306 326-24 56 13 8 34-48m65-15 26 35-11 12-37-27" fill="#0F675F" stroke="#0C423E" stroke-width="2"/>
+    <path d="m287 381-23 20m133-35 22 14" stroke="#D99F78" stroke-width="13" stroke-linecap="round"/>
+    <path d="m264 401-12 6m167-27 11 6m-15-9 12-2" stroke="#D99F78" stroke-width="5" stroke-linecap="round"/>
+    <path d="M312 357c14 7 28 11 43 12 18 1 33-4 48-13" stroke="#55A085" stroke-opacity=".65" stroke-width="3"/>
+  </g>
+
+  <g class="petugas-right">
+    <ellipse cx="664" cy="514" rx="88" ry="15" fill="#0C3B30" opacity=".2"/>
+    <path d="M611 422c-3 42 13 69 47 78 35 9 74-1 91-25l-8-55-130 2Z" fill="#335E52"/>
+    <path d="m640 476-7 50h27l21-48m18 0 18 49h28l-8-62" fill="#394F46"/>
+    <path d="m630 517 33 1 9 14h-48c-7-5-4-11 6-15Zm88 1 24-4 13 15h-45c-8-4-4-9 8-11Z" fill="#E5E5D8"/>
+    <path d="M611 306c16-15 50-17 76-5 22 10 27 40 25 80l-6 70H603l-2-79c-1-32-3-54 10-66Z" fill="url(#shirt)"/>
+    <path d="M636 289c5 12 13 19 25 19 13 0 23-7 27-19l-5-19h-43l-4 19Z" fill="#B97858"/>
+    <path d="M613 235c2-26 19-44 47-43 29 0 48 20 47 50l-5 39-20-15-6-30c-19 8-39 7-59 0l-3 36-13 10-6-27c-4-18-1-34 2-45Z" fill="#342D2B"/>
+    <path d="M617 247c8-11 20-17 34-18 17-1 31 5 42 17l-2 28c-1 18-16 31-34 31-17 0-33-14-36-30l-4-28Z" fill="#C58461"/>
+    <path d="M620 250c6-6 14-8 22-7m29-1c7-1 13 1 18 5" stroke="#5B3D34" stroke-width="3" stroke-linecap="round"/>
+    <path d="M627 263h3m34 0h3" stroke="#233D35" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M648 264v12l-5 2" stroke="#9F644D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M639 287c7 4 15 4 22-1" stroke="#884E42" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="m638 312 19 22 20-22-9-5h-21l-9 5Z" fill="#F7F1E6"/>
+    <path d="M657 333v57m0-45 16 15" stroke="#CAD8CA" stroke-width="2"/>
+    <path d="M610 327h-10v20h10m94-20h10v20h-10" fill="#D39A5F"/>
+    <path d="M608 340c-18 12-28 33-26 53l17 6 37-47m55-25 34 36-9 15-46-29" fill="#E5EBDD"/>
+    <path d="m582 391-21 11m137-41 25 17" stroke="#C38360" stroke-width="13" stroke-linecap="round"/>
+    <path d="M574 401c-8 0-15 4-20 10m178-33 10 4 7 6" stroke="#C38360" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="657" cy="350" r="8" fill="#D5A361"/>
+    <path d="M653 350h8m-4-4v8" stroke="#FFF8E9" stroke-width="1.8"/>
+  </g>
+
+  <g filter="url(#soft-shadow)">
+    <path d="M197 423c94-31 172-26 261-18 112 10 221-2 319-21 35-7 61 7 78 23v43H197v-27Z" fill="url(#desk)"/>
+    <path d="M197 423c94-31 172-26 261-18 112 10 221-2 319-21 35-7 61 7 78 23v15c-91-22-196 0-305 1-131 1-240-24-353 16v-16Z" fill="#F2C49A"/>
+    <path d="M197 450h658v104c-125 26-515 34-658 1V450Z" fill="#B9795B"/>
+    <path d="M197 450c152 14 444 15 658-1" stroke="#E4A881" stroke-width="3"/>
+    <path d="M243 475h125m-125 15h84m391-10h116" stroke="#D69572" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
+    <path d="M268 554v33m514-35v36" stroke="#805D4C" stroke-width="18" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#soft-shadow)">
+    <path d="m548 347 147 1-14 90H535l13-91Z" fill="#0F675F"/>
+    <path d="m555 355 128 1-10 71H546l9-72Z" fill="#DDEEE3"/>
+    <path d="M570 413c22-26 39-5 55-17 18-15 31-23 45-14v43H563l7-12Z" fill="#8CBCA2"/>
+    <path d="M570 414c16-6 25-1 37 3 19 6 31-5 48-15 8-5 15-5 22-3" stroke="#3F8C70" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="638" cy="381" r="3" fill="#C57F5C"/>
+    <path d="m530 438 168 1 14 12H515l15-12Z" fill="#174C45"/>
+    <path d="m597 446 30 1-7 4h-18l-5-5Z" fill="#A4C7B4"/>
+  </g>
+
+  <g transform="translate(352 431) rotate(-8)">
+    <rect width="114" height="73" rx="8" fill="#F9F7EC" filter="url(#soft-shadow)"/>
+    <path d="M14 15h54m-54 9h73m-73 9h60" stroke="#A8C1AC" stroke-width="4" stroke-linecap="round"/>
+    <path d="M17 60 38 47l17 5 25-21 19 9" stroke="#B57A58" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="80" cy="31" r="3" fill="#43846A"/>
+  </g>
+
+  <g transform="translate(729 399)">
+    <ellipse cx="44" cy="51" rx="39" ry="9" fill="#754B3E" opacity=".22"/>
+    <path d="M20 14h50l-4 33H24l-4-33Z" fill="#F5EADD"/>
+    <path d="M69 21h7c12 0 12 16 0 17h-9" stroke="#F5EADD" stroke-width="6"/>
+    <path d="M29 12c-3-5 2-8 0-12m15 12c-3-5 2-8 0-12m15 12c-3-5 2-8 0-12" stroke="#F7F0DA" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(104 380)">
+    <path d="M47 98V42" stroke="#765A3D" stroke-width="9" stroke-linecap="round"/>
+    <g class="plant-leaves">
+      <path d="M47 61C22 49 15 33 17 14c23 5 34 22 30 47Z" fill="#8EC39A"/>
+      <path d="M48 75c22-18 32-38 30-58-24 8-35 27-30 58Z" fill="#B5D6A2"/>
+      <path d="M48 48c-14-22-12-40 3-54 17 18 16 35-3 54Z" fill="#D2DEA6"/>
+      <path d="M43 83c-23-1-37-12-43-32 25-1 40 11 43 32Z" fill="#5FA17A"/>
+    </g>
+    <path d="M10 100h73l-9 30H18L10 100Z" fill="#CE936D"/>
+    <path d="M20 111h52" stroke="#E6B490" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <g class="floating-card delay" transform="translate(778 271)">
+    <rect width="111" height="75" rx="15" fill="#F8F5E9" filter="url(#soft-shadow)"/>
+    <circle cx="26" cy="29" r="14" fill="#E8D6B2"/>
+    <path d="M18 29h16m-8-8v16" stroke="#92714F" stroke-width="2" stroke-linecap="round"/>
+    <path d="M51 23h43m-43 10h34m-34 10h39" stroke="#8AA894" stroke-width="4" stroke-linecap="round"/>
+    <rect x="17" y="55" width="77" height="6" rx="3" fill="#C8D9C7"/>
+  </g>
+</svg>

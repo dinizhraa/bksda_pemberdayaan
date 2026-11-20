@@ -657,3 +657,50 @@
         animation: none;
     }
 }
+
+/* ================================================================== */
+/* Halaman profil                                                      */
+/* ================================================================== */
+@layer components {
+    .profile-cover {
+        @apply relative h-28 overflow-hidden;
+        background-image: linear-gradient(125deg, #1d9e92 0%, #38bdf8 62%, #6ee7b7 100%);
+    }
+
+    .profile-cover::before {
+        content: '';
+        @apply absolute inset-0 opacity-50;
+        background-image: radial-gradient(rgb(255 255 255 / 0.45) 1px, transparent 1px);
+        background-size: 14px 14px;
+    }
+
+    .profile-avatar {
+        @apply relative grid size-24 place-items-center rounded-full bg-gradient-to-br from-brand-300 via-brand-500 to-sky-400 text-3xl font-extrabold text-white shadow-xl shadow-brand-700/30 ring-4 ring-white;
+    }
+
+    .info-row {
+        @apply flex items-center gap-3 rounded-2xl p-3 transition-colors duration-200 hover:bg-white/60;
+    }
+
+    .panel-head {
+        @apply mb-6 flex items-start gap-4;
+    }
+
+    .tone-rose {
+        @apply bg-rose-100 text-rose-600;
+    }
+
+    .alert-ok {
+        @apply inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700;
+    }
+
+    .alert-warn {
+        @apply flex items-start gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/80 p-4 text-sm text-amber-900;
+    }
+
+    .btn-danger {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors
+            hover:bg-rose-500 active:bg-rose-700
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2;
+    }
+}

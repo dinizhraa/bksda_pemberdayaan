@@ -5,9 +5,10 @@
     $loginEmail = old('_form') === 'login' ? old('email') : '';
     $registerOld = old('_form') === 'register' ? old() : [];
     $canRegister = Route::has('register');
+    $loginAs = old('_form') === 'login' ? old('login_as', 'user') : 'user';
 @endphp
 
-<div x-cloak x-show="modal" x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="opacity-0"
+<div x-cloak x-show="modal" x-data="{ loginAs: @js($loginAs) }" x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="opacity-0"
      x-transition:leave="transition duration-200 ease-in" x-transition:leave-end="opacity-0"
      x-effect="if (modal) $nextTick(() => $refs[modal + 'First']?.focus())"
      class="fixed inset-0 z-[60] grid place-items-center overflow-y-auto p-4"
@@ -33,7 +34,10 @@
         @if ($canRegister)
             <div class="tab-switch mt-5" role="tablist">
                 <button type="button" role="tab" @click="modal = 'login'" :aria-selected="modal === 'login'" class="tab-btn" :class="{ 'tab-btn-active': modal === 'login' }">Masuk</button>
-                <button type="button" role="tab" @click="modal = 'register'" :aria-selected="modal === 'register'" class="tab-btn" :class="{ 'tab-btn-active': modal === 'register' }">Daftar</button>
+                <button type="button" role="tab" @click="modal = 'register'" :aria-selected="modal === 'register'" class="tab-btn" :class="{ 'tab-btn-active': modal === 'register' }"
+                        x-show="loginAs === 'user'">
+                    Daftar
+                </button>
             </div>
         @endif
 
@@ -42,6 +46,24 @@
               x-transition:enter-start="translate-y-2 opacity-0" x-transition:enter-end="translate-y-0 opacity-100" class="mt-5 space-y-4">
             @csrf
             <input type="hidden" name="_form" value="login">
+            <input type="hidden" name="login_as" :value="loginAs">
+
+            <div>
+                <span class="text-sm font-semibold text-ink-700">Masuk sebagai</span>
+                <div class="mt-2 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Jenis akun">
+                    <button type="button" role="radio" :aria-checked="loginAs === 'user'" @click="loginAs = 'user'"
+                            class="rounded-xl border px-3 py-3 text-sm font-semibold transition"
+                            :class="loginAs === 'user' ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-slate-200 text-ink-600 hover:border-brand-300'">
+                        Pengguna
+                    </button>
+                    <button type="button" role="radio" :aria-checked="loginAs === 'admin'" @click="loginAs = 'admin'"
+                            class="rounded-xl border px-3 py-3 text-sm font-semibold transition"
+                            :class="loginAs === 'admin' ? 'border-brand-600 bg-brand-50 text-brand-700' : 'border-slate-200 text-ink-600 hover:border-brand-300'">
+                        Admin
+                    </button>
+                </div>
+                <x-input-error :messages="$loginErr?->get('login_as')" class="mt-1.5" />
+            </div>
 
             <div>
                 <x-input-label for="login_email" value="Email" />

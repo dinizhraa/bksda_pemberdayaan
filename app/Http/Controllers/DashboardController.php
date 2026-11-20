@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kawasan;
 use App\Models\Kelompok;
 use App\Models\Nte;
+use App\Models\NteSummary;
 use App\Services\KawasanClusteringService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -12,6 +13,14 @@ use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
+    private const DAFTAR_KAWASAN_RESMI = [
+        'CA Morowali', 'CA Pamona', 'SM Bakiriang', 'CA Tanjung Api',
+        'CA Gunung Sojol', 'TWA Tokobae', 'CA Pangi Binangga', 'TWA Bancea',
+        'CA Gunung Dako', 'SM Lombuyan', 'SM Pinjan Tanjung Matop',
+        'CA Gunung Tinombala', 'SM Pulau Dolangan', 'SM Tanjung Santigi',
+        'TWA Wera', 'SM Pulau Pasoso', 'CA Pati-pati', 'TB Landusa Tomata',
+    ];
+
     public static function buildKawasanClusterData(Collection $kawasans, float $totalNte): Collection
     {
         $ranked = $kawasans
@@ -59,26 +68,22 @@ class DashboardController extends Controller
         })->values();
     }
 
-    public function index(KawasanClusteringService $clusteringService)
+    public function index(KawasanClusteringService $clusteringService): View
     {
-        // Daftar tegas 18 kawasan resmi BKSDA Sulawesi Tengah
-        $daftarKawasanResmi = [
-            'CA Morowali', 'CA Pamona', 'SM Bakiriang', 'CA Tanjung Api',
-            'CA Gunung Sojol', 'TWA Tokobae', 'CA Pangi Binangga', 'TWA Bancea',
-            'CA Gunung Dako', 'SM Lombuyan', 'SM Pinjan Tanjung Matop',
-            'CA Gunung Tinombala', 'SM Pulau Dolangan', 'SM Tanjung Santigi',
-            'TWA Wera', 'SM Pulau Pasoso', 'CA Pati-pati', 'TB Landusa Tomata',
-        ];
-
         // Ambil HANYA 18 kawasan resmi beserta relasi nte-nya
         $kawasans = Kawasan::with('nte')
-            ->whereIn('nama_kawasan', $daftarKawasanResmi)
+            ->whereIn('nama_kawasan', self::DAFTAR_KAWASAN_RESMI)
             ->get();
 
         $kawasanIds = $kawasans->pluck('id');
 
-        // Hitung total NTE khusus dari 18 kawasan resmi
-        $totalNte = Nte::whereIn('kawasan_id', $kawasanIds)->sum('total_nte');
+        $totalNtePerKawasan = Nte::query()
+            ->whereIn('kawasan_id', $kawasanIds)
+            ->sum('total_nte');
+        $nteSummary = NteSummary::query()
+            ->where('tahun', 2025)
+            ->first();
+        $totalNte = (float) ($nteSummary?->total_nte ?? $totalNtePerKawasan);
 
         // Kunci jumlah kawasan menjadi persis 18
         $jumlahKawasan = 18;
@@ -214,6 +219,7 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'totalNte',
+            'nteSummary',
             'jumlahKawasan',
             'jumlahKelompok',
             'totalBantuan',
@@ -233,6 +239,16 @@ class DashboardController extends Controller
         $kawasans = Kawasan::all();
 
         return view('tambah_kelompok', compact('kawasans'));
+    }
+
+    public function groups(KawasanClusteringService $clusteringService): View
+    {
+        return $this->index($clusteringService);
+    }
+
+    public function areas(KawasanClusteringService $clusteringService): View
+    {
+        return $this->index($clusteringService);
     }
 
     public function map(): View

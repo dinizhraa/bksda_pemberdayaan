@@ -9,7 +9,7 @@
     $keunggulan = [
         ['database', 'Terpusat', 'Data kelompok, kawasan, dan NTE tersimpan di satu tempat.'],
         ['eye', 'Mudah dibaca', 'Kartu statistik dan grafik menggantikan tumpukan tabel.'],
-        ['lock', 'Terlindungi', 'Data dapat dibuka setelah masuk dengan akun terdaftar.'],
+        ['lock', 'Terlindungi', 'Data publik dapat dilihat tanpa akun; pengelolaan hanya untuk admin.'],
     ];
 @endphp
 

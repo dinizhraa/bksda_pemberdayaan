@@ -74,12 +74,7 @@
             </p>
 
             <div class="mt-8 flex animate-rise flex-wrap items-center gap-3" style="animation-delay: 1050ms">
-                @auth
-                    <a href="{{ route('dashboard') }}" data-magnetic class="btn-brand btn-glow btn-lg">Buka Dashboard</a>
-                @else
-                    <button type="button" data-magnetic @click="modal = 'register'" class="btn-brand btn-glow btn-lg">Mulai Sekarang</button>
-                    <button type="button" data-magnetic @click="modal = 'login'" class="btn-ghost btn-glow btn-lg">Masuk</button>
-                @endauth
+                <a href="{{ route('visualisasi') }}" data-magnetic class="btn-brand btn-glow btn-lg">Lihat Visualisasi</a>
                 <a href="#fitur" class="group inline-flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold text-ink-700 transition-colors hover:text-brand-700">
                     Lihat fitur
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 group-hover:translate-y-1" aria-hidden="true"></i>

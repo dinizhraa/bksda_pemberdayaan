@@ -57,26 +57,116 @@
         'cluster' => $clusterData,
     ];
     $charts['cluster'] = $clusterAnalysis;
+
+    $sidebarPage = match (true) {
+        request()->routeIs('kelompok.index') => 'groups',
+        request()->routeIs('kawasan.index') => 'areas',
+        default => 'dashboard',
+    };
 @endphp
 
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="page-title">Data Mining BKSDA Sulawesi Tengah</h1>
-        <p class="page-sub">Selamat datang, {{ strtok(Auth::user()->name, ' ') }}! Dashboard ini menampilkan analisis kawasan konservasi berbasis data mining sesuai pendekatan RPS mata kuliah Data Mining, mulai dari preprocessing, clustering, hingga interpretasi hasil per wilayah.</p>
-    </x-slot>
-
-    <x-slot name="actions">
-        <label class="search-box">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-            <input id="searchTable" type="search" placeholder="Cari kelompok atau usaha…" aria-label="Cari kelompok binaan">
-        </label>
-        <span class="pill">
-            <i class="fa-solid fa-calendar-days text-brand-600" aria-hidden="true"></i>
-            Tahun Anggaran 2026
-        </span>
+        @if ($sidebarPage === 'groups')
+            <h1 class="page-title">Kelompok Binaan</h1>
+            <p class="page-sub">Kelompok masyarakat di sekitar kawasan konservasi BKSDA Sulteng.</p>
+        @elseif ($sidebarPage === 'areas')
+            <h1 class="page-title">Kawasan &amp; NTE</h1>
+            <p class="page-sub">Analisis nilai transaksi ekonomi kawasan konservasi.</p>
+        @endif
     </x-slot>
 
     <div class="flex flex-col gap-4">
+        @if ($sidebarPage === 'dashboard')
+        <section class="relative isolate overflow-hidden rounded-3xl border border-brand-100/70 bg-gradient-to-r from-brand-800 via-brand-700 to-[#6dbba1] px-5 py-6 text-white shadow-lg sm:px-7 sm:py-7">
+            <div class="absolute -right-16 -top-20 size-64 rounded-full border-[34px] border-white/10" aria-hidden="true"></div>
+            <div class="absolute bottom-[-70px] right-32 size-44 rounded-full bg-emerald-300/20 blur-sm" aria-hidden="true"></div>
+            <div class="relative z-10 grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" class="grid size-9 place-items-center rounded-full border border-white/20 bg-white/10 text-white lg:hidden"
+                                @click="sidebar = true" aria-label="Buka menu">
+                            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                        </button>
+                        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90">
+                            <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                            Pemberdayaan Masyarakat BKSDA Sulawesi Tengah
+                        </span>
+                        <span class="inline-flex items-center gap-2 rounded-full border border-emerald-100/20 bg-emerald-950/15 px-3 py-1.5 text-xs font-semibold text-white/90">
+                            <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                            Tahun Anggaran 2026
+                        </span>
+                    </div>
+                    <h2 class="mt-4 max-w-2xl text-2xl font-bold leading-tight sm:text-3xl">
+                        Pendampingan kelompok binaan untuk ekonomi masyarakat yang lestari
+                    </h2>
+                    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-white/80">
+                        Pantau kawasan konservasi, dukung kegiatan penyuluhan, dan kelola data kelompok binaan di sekitar habitat dan area konservasi.
+                    </p>
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <a href="{{ route('kelompok.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-brand-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-brand-50">
+                            <i class="fa-solid fa-users" aria-hidden="true"></i>
+                            Kelompok Binaan
+                        </a>
+                        @if (Auth::check() && Auth::user()->isAdmin())
+                            <a href="{{ route('kelompok.create') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                Tambah Kelompok
+                            </a>
+                        @else
+                            <a href="https://bit.ly/Bantuanbksdasulteng2026" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20">
+                                <i class="fa-solid fa-file-excel" aria-hidden="true"></i>
+                                Isi Data Bantuan
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                <div x-data="{
+                        clock: '',
+                        date: '',
+                        greeting: '',
+                        updateClock() {
+                            const now = new Date();
+                            const hour = now.getHours();
+                            this.greeting = hour < 11 ? 'Selamat Pagi' : hour < 15 ? 'Selamat Siang' : hour < 18 ? 'Selamat Sore' : 'Selamat Malam';
+                            this.clock = new Intl.DateTimeFormat('id-ID', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false
+                            }).format(now).replaceAll(':', '.');
+                            this.date = new Intl.DateTimeFormat('id-ID', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            }).format(now);
+                        }
+                    }"
+                    x-init="updateClock(); setInterval(() => updateClock(), 1000)"
+                    class="relative flex h-full min-h-[300px] items-start justify-center sm:min-h-[260px] lg:min-h-[220px] lg:justify-end"
+                    aria-label="Sapaan dan waktu akun">
+                    <div class="relative z-20 w-full max-w-[280px] text-center text-white lg:text-right">
+                        <div class="flex items-center justify-center gap-2 lg:justify-end">
+                            <p class="text-sm font-semibold text-white/95">
+                                <span x-text="greeting"></span>, {{ Auth::check() ? Auth::user()->name : 'Pengunjung' }}
+                            </p>
+                            <span class="rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
+                                {{ Auth::check() ? (Auth::user()->isAdmin() ? 'Admin' : 'Penyuluh') : 'Publik' }}
+                            </span>
+                        </div>
+                        <p class="mt-2 text-xs font-medium text-white/75" x-text="date"></p>
+                        <p class="mt-2 text-4xl font-extrabold tabular-nums tracking-[0.08em] text-white" x-text="clock"></p>
+                    </div>
+                    <img src="{{ asset('images/bksda-editorial-dashboard.svg') }}"
+                         alt="Petugas BKSDA dan kelompok binaan bekerja bersama mengelola data, peta kawasan, dan grafik perkembangan"
+                         class="pointer-events-none absolute bottom-[-10px] right-1/2 z-10 w-[min(390px,96vw)] translate-x-1/2 select-none drop-shadow-xl animate-float-sm sm:bottom-[-14px] sm:right-[-8px] sm:w-[380px] sm:translate-x-0 lg:bottom-[-18px] lg:right-[-24px] lg:w-[440px]"
+                         width="760" height="440" loading="eager">
+                </div>
+            </div>
+        </section>
+
         <!-- Kartu statistik -->
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <x-stat-card icon="wallet" tone="teal" label="Total Nilai Ekonomi (NTE)" :chip="number_format($capaian, 1, ',', '.').'%'" note="dari target Rp 1,575 M">
@@ -149,6 +239,12 @@
                     <span class="chip chip-up"><i class="fa-solid fa-arrow-up text-[9px]" aria-hidden="true"></i>{{ number_format($capaian, 1, ',', '.') }}%</span>
                     <span class="text-xs text-ink-500">dari target Rp 1,575 M</span>
                 </div>
+                @if (($nteSummary?->nte_langsung_belum_teralokasi ?? 0) > 0)
+                    <p class="mt-2 text-xs text-ink-500">
+                        Selisih NTE langsung yang belum teralokasi ke kawasan:
+                        <strong><x-rupiah :value="$nteSummary->nte_langsung_belum_teralokasi" full /></strong>
+                    </p>
+                @endif
 
                 <div class="relative mt-4 h-60">
                     <canvas id="chart-nte" role="img" aria-label="Grafik area akumulasi NTE per kawasan konservasi, diurutkan dari NTE terbesar"></canvas>
@@ -183,7 +279,7 @@
             </x-glass-card>
 
             <x-glass-card title="Kelompok Terbaru">
-                <x-slot name="action"><a href="#kelompok" class="card-link">Lihat semua</a></x-slot>
+                <x-slot name="action"><a href="{{ route('kelompok.index') }}" class="card-link">Lihat semua</a></x-slot>
 
                 @forelse ($kelompokTerbaru as $kelompok)
                     <div class="list-row">
@@ -202,7 +298,9 @@
                 @endforelse
             </x-glass-card>
         </div>
+        @endif
 
+        @if ($sidebarPage !== 'groups')
         <!-- Baris 2: kawasan unggulan, kawasan teratas, NTE langsung vs tidak langsung -->
         <div id="kawasan" class="grid scroll-mt-6 gap-4 lg:grid-cols-2 xl:grid-cols-[1.15fr_1fr_1.4fr]">
             <x-glass-card title="Kawasan Unggulan">
@@ -230,10 +328,12 @@
                                 @endforeach
                             </div>
 
-                            <a href="{{ route('kelompok.create') }}" class="add-tile">
-                                <span class="grid size-9 place-items-center rounded-full border border-slate-300"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
-                                Tambah Kelompok
-                            </a>
+                            @if (Auth::check() && Auth::user()->isAdmin())
+                                <a href="{{ route('kelompok.create') }}" class="add-tile">
+                                    <span class="grid size-9 place-items-center rounded-full border border-slate-300"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+                                    Tambah Kelompok
+                                </a>
+                            @endif
                         </div>
 
                         <div class="mt-4 flex justify-center gap-2">
@@ -285,7 +385,9 @@
                 </div>
             </x-glass-card>
         </div>
+        @endif
 
+        @if ($sidebarPage !== 'areas')
         <!-- Tabel kelompok binaan -->
         <x-glass-card id="kelompok" class="scroll-mt-6 p-0 sm:p-0">
             <header class="flex flex-wrap items-center justify-between gap-3 px-5 pb-3 pt-5">
@@ -293,7 +395,17 @@
                     <h2 class="card-title">Daftar Kelompok Binaan</h2>
                     <p class="mt-0.5 text-xs text-ink-500">Kelompok masyarakat di sekitar kawasan konservasi BKSDA Sulteng.</p>
                 </div>
-                <a href="{{ route('kelompok.create') }}" class="btn-brand"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambah Kelompok</a>
+                <div class="flex flex-wrap items-center gap-2">
+                    @if ($sidebarPage === 'groups')
+                        <label class="search-box" for="groupSearch">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <input id="groupSearch" type="search" placeholder="Cari nama, desa, atau usaha…" aria-label="Cari kelompok binaan">
+                        </label>
+                    @endif
+                    @if (Auth::check() && Auth::user()->isAdmin())
+                        <a href="{{ route('kelompok.create') }}" class="btn-brand"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambah Kelompok</a>
+                    @endif
+                </div>
             </header>
 
             <div class="overflow-x-auto px-3 pb-3">
@@ -343,19 +455,23 @@
                                 <td>{{ $kelompok->jumlah_anggota ?? 0 }}</td>
                                 <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
                                 <td class="text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
-                                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                        </a>
-                                        <form action="{{ route('kelompok.destroy', $kelompok->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-icon-danger" title="Hapus data" aria-label="Hapus {{ $kelompok->nama_kelompok }}"
-                                                    onclick="return confirm('Yakin ingin menghapus data kelompok ini?')">
-                                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                                    @if (Auth::check() && Auth::user()->isAdmin())
+                                        <div class="flex items-center justify-end gap-2">
+                                            <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
+                                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                            </a>
+                                            <form action="{{ route('kelompok.destroy', $kelompok->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-icon-danger" title="Hapus data" aria-label="Hapus {{ $kelompok->nama_kelompok }}"
+                                                        onclick="return confirm('Yakin ingin menghapus data kelompok ini?')">
+                                                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <span class="text-xs text-ink-400">Lihat saja</span>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -372,26 +488,28 @@
                 </table>
             </div>
         </x-glass-card>
+        @endif
 
+        @if ($sidebarPage === 'dashboard')
         <x-glass-card id="clustering" class="scroll-mt-6">
             <header class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-<<<<<<< Updated upstream
-                    <h2 class="card-title">Analisis Clustering Kawasan Berdasarkan NTE</h2>
-                    <p class="mt-0.5 text-xs text-ink-500">Pemetaan kawasan hasil proses data mining untuk melihat pola kontribusi NTE dan keterkaitan dengan jumlah desa penyangga.</p>
-=======
                     <h2 class="card-title">Data Mining: K-Means Clustering Kawasan</h2>
                     <p class="mt-0.5 text-xs text-ink-500">Fitur: Total NTE, jumlah desa sekitar, dan rasio desa difasilitasi. Data dinormalisasi dengan Min-Max sebelum pengelompokan.</p>
->>>>>>> Stashed changes
                 </div>
                 <span class="chip chip-neutral px-3 py-1.5"><i class="fa-solid fa-brain" aria-hidden="true"></i> Data Mining</span>
             </header>
 
-<<<<<<< Updated upstream
-            <div class="relative mt-5 h-80">
-                <canvas id="chart-cluster" role="img" aria-label="Diagram sebar kawasan berdasarkan total NTE dan jumlah desa"></canvas>
-=======
-            <div class="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            @if ($clusterAnalysis['status'] === 'ok')
+                <div class="relative h-80">
+                    <canvas id="chart-cluster" role="img" aria-label="Diagram sebar hasil K-Means berdasarkan total NTE, dengan warna berbeda untuk setiap cluster"></canvas>
+                </div>
+                <p class="mt-3 text-xs text-ink-500">Kelompok diurutkan menurut rerata NTE. Hasil bersifat eksploratif dan perlu ditafsirkan bersama kondisi lapangan; silhouette adalah validasi internal, bukan bukti sebab-akibat.</p>
+            @else
+                <div class="empty-state">Clustering belum dapat dijalankan: diperlukan sedikitnya tiga kawasan valid dengan pola fitur yang berbeda.</div>
+            @endif
+
+            <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
                     <p class="text-xs text-ink-500">Data yang dianalisis</p>
                     <p class="mt-1 text-lg font-bold">{{ $clusterAnalysis['sample_count'] }} kawasan</p>
@@ -416,18 +534,9 @@
                         <p class="text-xs text-ink-500">Fasilitasi desa rata-rata {{ number_format($cluster['mean_coverage_percent'], 1, ',', '.') }}%</p>
                     </div>
                 @endforeach
->>>>>>> Stashed changes
             </div>
-
-            @if ($clusterAnalysis['status'] === 'ok')
-                <div class="relative h-80">
-                    <canvas id="chart-cluster" role="img" aria-label="Diagram sebar hasil K-Means berdasarkan total NTE, dengan warna berbeda untuk setiap cluster"></canvas>
-                </div>
-                <p class="mt-3 text-xs text-ink-500">Kelompok diurutkan menurut rerata NTE. Hasil bersifat eksploratif dan perlu ditafsirkan bersama kondisi lapangan; silhouette adalah validasi internal, bukan bukti sebab-akibat.</p>
-            @else
-                <div class="empty-state">Clustering belum dapat dijalankan: diperlukan sedikitnya tiga kawasan valid dengan pola fitur yang berbeda.</div>
-            @endif
         </x-glass-card>
+        @endif
 
     </div>
 

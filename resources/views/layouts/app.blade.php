@@ -17,6 +17,7 @@
 
                 <div class="flex min-w-0 flex-1 flex-col gap-6">
                     <!-- Topbar -->
+                    @unless(request()->routeIs('dashboard'))
                     <header class="flex flex-wrap items-center justify-between gap-4">
                         <div class="flex items-start gap-3">
                             <button type="button" class="icon-btn lg:hidden" @click="sidebar = true" aria-label="Buka menu">
@@ -32,6 +33,7 @@
                             <div class="flex w-full flex-wrap items-center gap-3 sm:w-auto">{{ $actions }}</div>
                         @endisset
                     </header>
+                    @endunless
 
                     <!-- Konten halaman -->
                     <main class="flex-1">

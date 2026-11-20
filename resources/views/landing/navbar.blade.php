@@ -11,15 +11,8 @@
         </nav>
 
         <div class="flex items-center gap-2">
-            @auth
-                <a href="{{ route('dashboard') }}" class="btn-brand btn-glow">Buka Dashboard</a>
-            @else
-                <button type="button" @click="modal = 'login'" class="btn-ghost btn-glow hidden sm:inline-flex">Masuk</button>
-                @if (Route::has('register'))
-                    <button type="button" @click="modal = 'register'" class="btn-brand btn-glow max-[380px]:hidden">Daftar</button>
-                @endif
-            @endauth
-
+            <a href="{{ route('login') }}" class="btn-ghost btn-glow hidden sm:inline-flex">Masuk Admin</a>
+            <a href="{{ route('visualisasi') }}" class="btn-brand btn-glow">Lihat Data</a>
             <button type="button" class="icon-btn lg:hidden" @click="menu = ! menu" :aria-expanded="menu" aria-label="Buka menu navigasi">
                 <i class="fa-solid" :class="menu ? 'fa-xmark' : 'fa-bars'" aria-hidden="true"></i>
             </button>
@@ -35,11 +28,7 @@
             <a href="#{{ $id }}" data-spy @click="menu = false" class="nav-pill">{{ $label }}</a>
         @endforeach
 
-        @guest
-            <button type="button" @click="menu = false; modal = 'login'" class="btn-ghost mt-2 sm:hidden">Masuk</button>
-            @if (Route::has('register'))
-                <button type="button" @click="menu = false; modal = 'register'" class="btn-brand hidden max-[380px]:inline-flex">Daftar</button>
-            @endif
-        @endguest
+        <a href="{{ route('login') }}" @click="menu = false" class="btn-ghost mt-2 sm:hidden">Masuk Admin</a>
+        <a href="{{ route('visualisasi') }}" @click="menu = false" class="btn-brand mt-2">Lihat Data</a>
     </div>
 </header>
