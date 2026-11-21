@@ -19,10 +19,13 @@ class MapControllerTest extends TestCase
         $response = $this->actingAs(User::factory()->create(['role' => 'admin']))
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
+                'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Peta Lestari',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
+                'jumlah_anggota_laki_laki' => 0,
+                'jumlah_anggota_perempuan' => 0,
                 'kecamatan' => 'Bualemo',
                 'kabupaten' => 'Banggai',
                 'latitude' => '-0.9012000',
@@ -60,10 +63,13 @@ class MapControllerTest extends TestCase
             ->from(route('kelompok.create'))
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
+                'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Tanpa Koordinat Lengkap',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
+                'jumlah_anggota_laki_laki' => 0,
+                'jumlah_anggota_perempuan' => 0,
                 'latitude' => '-0.9012',
             ]);
 
@@ -82,10 +88,13 @@ class MapControllerTest extends TestCase
             ->from(route('kelompok.create'))
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
+                'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Koordinat Tidak Valid',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
+                'jumlah_anggota_laki_laki' => 0,
+                'jumlah_anggota_perempuan' => 0,
                 'latitude' => '-91',
                 'longitude' => '119.8701',
             ]);
@@ -105,10 +114,13 @@ class MapControllerTest extends TestCase
         $this->actingAs($user)
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
+                'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Peta Edit',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
+                'jumlah_anggota_laki_laki' => 0,
+                'jumlah_anggota_perempuan' => 0,
             ]);
         $kelompokId = (int) Kelompok::query()
             ->where('nama_kelompok', 'Kelompok Peta Edit')
@@ -116,6 +128,7 @@ class MapControllerTest extends TestCase
 
         $response = $this->put(route('kelompok.update', $kelompokId), [
             'kawasan_id' => $kawasan->id,
+            'nama_desa' => 'Desa Peta',
             'nama_kelompok' => 'Kelompok Peta Edit',
             'nama_ketua' => 'Ketua Peta',
             'jenis_usaha' => 'Budidaya ikan',

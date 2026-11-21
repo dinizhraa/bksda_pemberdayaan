@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Desa;
 use App\Models\Kawasan;
 use App\Models\Kelompok;
 use App\Models\Nte;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -165,65 +167,136 @@ class DashboardController extends Controller
 
     public function storeKelompok(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
             'kawasan_id' => 'required|exists:kawasans,id',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
+            'nama_desa' => 'required|string|max:255',
+            'kecamatan' => 'nullable|string|max:255',
+            'kabupaten' => 'nullable|string|max:255',
+            'sk_kelompok' => 'nullable|string|max:255',
+            'jumlah_anggota_laki_laki' => 'required|integer|min:0',
+            'jumlah_anggota_perempuan' => 'required|integer|min:0',
             'latitude' => 'nullable|numeric|between:-90,90|required_with:longitude',
             'longitude' => 'nullable|numeric|between:-180,180|required_with:latitude',
         ]);
 
-        Kelompok::create([
-            'kawasan_id' => $request->kawasan_id,
-            'tahun_pembinaan' => $request->tahun_pembinaan ?? 2026,
-            'kecamatan' => $request->kecamatan,
-            'kabupaten' => $request->kabupaten,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'nama_kelompok' => $request->nama_kelompok,
-            'nama_ketua' => $request->nama_ketua,
-            'no_hp' => $request->no_hp,
-            'jenis_usaha' => $request->jenis_usaha,
-            'sk_kelompok' => $request->sk_kelompok,
-            'jumlah_anggota' => $request->input('jumlah_anggota', 0),
-            'jumlah_bantuan' => $request->jumlah_bantuan,
-        ]);
+        DB::transaction(function () use ($request, $validated): void {
+            $desa = $this->resolveOrCreateDesa(
+                trim($validated['nama_desa']),
+                (int) $validated['kawasan_id'],
+                $validated['kecamatan'] ?? null,
+                $validated['kabupaten'] ?? null,
+            );
+
+            Kelompok::create([
+                'kawasan_id' => $validated['kawasan_id'],
+                'desa_id' => $desa->id,
+                'tahun_pembinaan' => $request->tahun_pembinaan ?? 2026,
+                'kecamatan' => $validated['kecamatan'] ?? null,
+                'kabupaten' => $validated['kabupaten'] ?? null,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'nama_kelompok' => $validated['nama_kelompok'],
+                'nama_ketua' => $validated['nama_ketua'],
+                'no_hp' => $request->no_hp,
+                'jenis_usaha' => $validated['jenis_usaha'],
+                'sk_kelompok' => $validated['sk_kelompok'] ?? null,
+                'jumlah_anggota_laki_laki' => $validated['jumlah_anggota_laki_laki'],
+                'jumlah_anggota_perempuan' => $validated['jumlah_anggota_perempuan'],
+                'jumlah_anggota' => (int) $validated['jumlah_anggota_laki_laki']
+                    + (int) $validated['jumlah_anggota_perempuan'],
+                'jumlah_bantuan' => $validated['jumlah_bantuan'],
+            ]);
+        });
 
         return redirect()->route('dashboard')->with('success', 'Data kelompok binaan berhasil ditambahkan!');
     }
 
     public function updateKelompok(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
             'kawasan_id' => 'required|exists:kawasans,id',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
+            'nama_desa' => 'required|string|max:255',
+            'kecamatan' => 'nullable|string|max:255',
+            'kabupaten' => 'nullable|string|max:255',
+            'sk_kelompok' => 'nullable|string|max:255',
+            'jumlah_anggota_laki_laki' => 'nullable|integer|min:0|required_with:jumlah_anggota_perempuan',
+            'jumlah_anggota_perempuan' => 'nullable|integer|min:0|required_with:jumlah_anggota_laki_laki',
             'latitude' => 'nullable|numeric|between:-90,90|required_with:longitude',
             'longitude' => 'nullable|numeric|between:-180,180|required_with:latitude',
         ]);
 
         $kelompok = Kelompok::findOrFail($id);
-        $kelompok->update([
-            'kawasan_id' => $request->kawasan_id,
-            'tahun_pembinaan' => $request->tahun_pembinaan ?? $kelompok->tahun_pembinaan,
-            'kecamatan' => $request->kecamatan,
-            'kabupaten' => $request->kabupaten,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'nama_kelompok' => $request->nama_kelompok,
-            'nama_ketua' => $request->nama_ketua,
-            'no_hp' => $request->no_hp,
-            'jenis_usaha' => $request->jenis_usaha,
-            'sk_kelompok' => $request->sk_kelompok,
-            'jumlah_anggota' => $request->input('jumlah_anggota', $kelompok->jumlah_anggota),
-            'jumlah_bantuan' => $request->jumlah_bantuan,
-        ]);
+        $memberCounts = [];
+
+        if (($validated['jumlah_anggota_laki_laki'] ?? null) !== null
+            && ($validated['jumlah_anggota_perempuan'] ?? null) !== null) {
+            $memberCounts = [
+                'jumlah_anggota_laki_laki' => $validated['jumlah_anggota_laki_laki'],
+                'jumlah_anggota_perempuan' => $validated['jumlah_anggota_perempuan'],
+                'jumlah_anggota' => (int) $validated['jumlah_anggota_laki_laki']
+                    + (int) $validated['jumlah_anggota_perempuan'],
+            ];
+        }
+
+        DB::transaction(function () use ($request, $validated, $kelompok, $memberCounts): void {
+            $desa = $this->resolveOrCreateDesa(
+                trim($validated['nama_desa']),
+                (int) $validated['kawasan_id'],
+                $validated['kecamatan'] ?? null,
+                $validated['kabupaten'] ?? null,
+            );
+
+            $kelompok->update([
+                'kawasan_id' => $validated['kawasan_id'],
+                'desa_id' => $desa->id,
+                'tahun_pembinaan' => $request->tahun_pembinaan ?? $kelompok->tahun_pembinaan,
+                'kecamatan' => $validated['kecamatan'] ?? null,
+                'kabupaten' => $validated['kabupaten'] ?? null,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'nama_kelompok' => $validated['nama_kelompok'],
+                'nama_ketua' => $validated['nama_ketua'],
+                'no_hp' => $request->no_hp,
+                'jenis_usaha' => $validated['jenis_usaha'],
+                'sk_kelompok' => $validated['sk_kelompok'] ?? null,
+                'jumlah_bantuan' => $validated['jumlah_bantuan'],
+                ...$memberCounts,
+            ]);
+        });
 
         return redirect()->route('dashboard')->with('success', 'Data kelompok binaan berhasil diperbarui!');
+    }
+
+    private function resolveOrCreateDesa(string $namaDesa, int $kawasanId, ?string $kecamatan, ?string $kabupaten): Desa
+    {
+        $desa = Desa::query()
+            ->where('nama_desa', $namaDesa)
+            ->where(function (Builder $query) use ($kawasanId): void {
+                $query->where('kawasan_id', $kawasanId)
+                    ->orWhereHas('kawasans', fn (Builder $relation): Builder => $relation->whereKey($kawasanId));
+            })
+            ->first();
+
+        if ($desa === null) {
+            $desa = Desa::query()->create([
+                'kawasan_id' => $kawasanId,
+                'nama_desa' => $namaDesa,
+                'kecamatan' => $kecamatan,
+                'kabupaten' => $kabupaten,
+            ]);
+        }
+
+        $desa->kawasans()->syncWithoutDetaching([$kawasanId]);
+
+        return $desa;
     }
 
     public function destroyKelompok($id)

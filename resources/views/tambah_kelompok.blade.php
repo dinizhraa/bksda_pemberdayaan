@@ -28,6 +28,12 @@
                 <x-input-error :messages="$errors->get('kawasan_id')" class="mt-1.5" />
             </div>
 
+            <div class="sm:col-span-2">
+                <x-input-label for="nama_desa" value="Desa" />
+                <x-text-input id="nama_desa" name="nama_desa" type="text" class="mt-1.5 block w-full" :value="old('nama_desa', $kelompok->desa?->nama_desa ?? '')" required placeholder="Masukkan nama desa" />
+                <x-input-error :messages="$errors->get('nama_desa')" class="mt-1.5" />
+            </div>
+
             <div>
                 <x-input-label for="nama_ketua" value="Nama Ketua Kelompok" />
                 <x-text-input id="nama_ketua" name="nama_ketua" type="text" class="mt-1.5 block w-full" :value="old('nama_ketua', $kelompok->nama_ketua ?? '')" required placeholder="Nama ketua" />
@@ -72,6 +78,31 @@
             </div>
 
             <div>
+                <x-input-label for="sk_kelompok" value="SK (Surat Keputusan)" />
+                <x-text-input id="sk_kelompok" name="sk_kelompok" type="text" class="mt-1.5 block w-full" :value="old('sk_kelompok', $kelompok->sk_kelompok ?? '')" placeholder="Nomor SK kelompok" />
+                <x-input-error :messages="$errors->get('sk_kelompok')" class="mt-1.5" />
+            </div>
+
+            <div class="sm:col-span-2 grid gap-5 sm:grid-cols-3">
+                <div>
+                    <x-input-label for="jumlah_anggota_laki_laki" value="Jumlah Anggota Laki-laki" />
+                    <x-text-input id="jumlah_anggota_laki_laki" name="jumlah_anggota_laki_laki" type="number" min="0" step="1" class="mt-1.5 block w-full" :value="old('jumlah_anggota_laki_laki', $kelompok->jumlah_anggota_laki_laki ?? '')" placeholder="Contoh: 8" />
+                    <x-input-error :messages="$errors->get('jumlah_anggota_laki_laki')" class="mt-1.5" />
+                </div>
+
+                <div>
+                    <x-input-label for="jumlah_anggota_perempuan" value="Jumlah Anggota Perempuan" />
+                    <x-text-input id="jumlah_anggota_perempuan" name="jumlah_anggota_perempuan" type="number" min="0" step="1" class="mt-1.5 block w-full" :value="old('jumlah_anggota_perempuan', $kelompok->jumlah_anggota_perempuan ?? '')" placeholder="Contoh: 7" />
+                    <x-input-error :messages="$errors->get('jumlah_anggota_perempuan')" class="mt-1.5" />
+                </div>
+
+                <div>
+                    <x-input-label for="jumlah_anggota" value="Jumlah Anggota Kelompok" />
+                    <x-text-input id="jumlah_anggota" name="jumlah_anggota" type="number" min="0" step="1" class="mt-1.5 block w-full" :value="old('jumlah_anggota', $kelompok->jumlah_anggota ?? 0)" readonly />
+                </div>
+            </div>
+
+            <div>
                 <x-input-label for="jumlah_bantuan" value="Jumlah Bantuan (Rp)" />
                 <x-text-input id="jumlah_bantuan" name="jumlah_bantuan" type="number" class="mt-1.5 block w-full" :value="old('jumlah_bantuan', $kelompok->jumlah_bantuan ?? '')" required placeholder="Contoh: 25000000" />
                 <x-input-error :messages="$errors->get('jumlah_bantuan')" class="mt-1.5" />
@@ -83,4 +114,28 @@
             </div>
         </form>
     </x-glass-card>
+
+    @pushOnce('scripts')
+        <script>
+            const maleInput = document.getElementById('jumlah_anggota_laki_laki');
+            const femaleInput = document.getElementById('jumlah_anggota_perempuan');
+            const totalInput = document.getElementById('jumlah_anggota');
+
+            if (maleInput && femaleInput && totalInput) {
+                const existingTotal = Number(totalInput.value) || 0;
+                const updateTotal = () => {
+                    const maleCount = maleInput.value === '' ? 0 : Number(maleInput.value);
+                    const femaleCount = femaleInput.value === '' ? 0 : Number(femaleInput.value);
+
+                    totalInput.value = maleInput.value === '' && femaleInput.value === ''
+                        ? String(existingTotal)
+                        : String(maleCount + femaleCount);
+                };
+
+                maleInput.addEventListener('input', updateTotal);
+                femaleInput.addEventListener('input', updateTotal);
+                updateTotal();
+            }
+        </script>
+    @endPushOnce
 </x-app-layout>

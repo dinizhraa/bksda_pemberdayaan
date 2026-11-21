@@ -423,7 +423,9 @@
                             <th>No HP</th>
                             <th>Jenis Usaha</th>
                             <th>SK Kelompok</th>
-                            <th>Anggota Kelompok</th>
+                            <th>Laki-laki</th>
+                            <th>Perempuan</th>
+                            <th>Total Anggota</th>
                             <th>Jumlah Bantuan</th>
                             <th class="w-20 text-right">Aksi</th>
                         </tr>
@@ -452,6 +454,8 @@
                                 <td>{{ $kelompok->no_hp ?? '-' }}</td>
                                 <td><span class="tag">{{ $kelompok->jenis_usaha ?? '-' }}</span></td>
                                 <td class="max-w-[180px] break-words">{{ $kelompok->sk_kelompok ?? '-' }}</td>
+                                <td>{{ $kelompok->jumlah_anggota_laki_laki ?? '-' }}</td>
+                                <td>{{ $kelompok->jumlah_anggota_perempuan ?? '-' }}</td>
                                 <td>{{ $kelompok->jumlah_anggota ?? 0 }}</td>
                                 <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
                                 <td class="text-right">
