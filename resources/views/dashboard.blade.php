@@ -390,20 +390,52 @@
         @if ($sidebarPage !== 'areas')
         <!-- Tabel kelompok binaan -->
         <x-glass-card id="kelompok" class="scroll-mt-6 p-0 sm:p-0">
-            <header class="flex flex-wrap items-center justify-between gap-3 px-5 pb-3 pt-5">
+            <header @class([
+                'px-5 pb-3 pt-5',
+                'flex flex-col gap-4' => $sidebarPage === 'groups',
+                'flex flex-wrap items-center justify-between gap-3' => $sidebarPage !== 'groups',
+            ])>
                 <div>
                     <h2 class="card-title">Daftar Kelompok Binaan</h2>
                     <p class="mt-0.5 text-xs text-ink-500">Kelompok masyarakat di sekitar kawasan konservasi BKSDA Sulteng.</p>
                 </div>
-                <div class="flex flex-wrap items-center gap-2">
+                <div @class([
+                    'grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center' => $sidebarPage === 'groups',
+                    'flex flex-wrap items-center gap-2' => $sidebarPage !== 'groups',
+                ])>
                     @if ($sidebarPage === 'groups')
-                        <label class="search-box" for="groupSearch">
+                        <label class="search-box col-span-2 w-full min-w-0 sm:col-span-1 sm:min-w-[220px] sm:flex-1" for="groupSearch">
                             <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
                             <input id="groupSearch" type="search" placeholder="Cari nama, desa, atau usaha…" aria-label="Cari kelompok binaan">
                         </label>
                     @endif
                     @if (Auth::check() && Auth::user()->isAdmin())
-                        <a href="{{ route('kelompok.create') }}" class="btn-brand"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambah Kelompok</a>
+                        @if ($sidebarPage === 'groups')
+                            <a href="{{ route('kelompok.export', ['format' => 'csv']) }}"
+                               data-group-export
+                               data-export-base="{{ route('kelompok.export', ['format' => 'csv']) }}"
+                               class="btn-ghost min-h-11 justify-center whitespace-nowrap px-3 text-xs"
+                               aria-label="Unduh seluruh data atau hasil pencarian dalam format CSV">
+                                <i class="fa-solid fa-file-csv text-emerald-700" aria-hidden="true"></i>
+                                Unduh CSV
+                            </a>
+                            <a href="{{ route('kelompok.export', ['format' => 'xlsx']) }}"
+                               data-group-export
+                               data-export-base="{{ route('kelompok.export', ['format' => 'xlsx']) }}"
+                               class="btn-ghost min-h-11 justify-center whitespace-nowrap px-3 text-xs"
+                               aria-label="Unduh seluruh data atau hasil pencarian dalam format Excel">
+                                <i class="fa-solid fa-file-excel text-emerald-700" aria-hidden="true"></i>
+                                Unduh Excel
+                            </a>
+                        @endif
+                        <a href="{{ route('kelompok.create') }}"
+                           @class([
+                               'btn-brand',
+                               'min-h-11 justify-center whitespace-nowrap px-3 col-span-2 sm:col-span-1' => $sidebarPage === 'groups',
+                           ])>
+                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                            Tambah Kelompok
+                        </a>
                     @endif
                 </div>
             </header>
@@ -412,7 +444,7 @@
                 <table class="glass-table" id="kelompokTable">
                     <thead>
                         <tr>
-                            <th class="w-14">No</th>
+                            <th class="w-14">No.</th>
                             <th>Tahun</th>
                             <th>Kawasan</th>
                             <th>Desa</th>
@@ -432,7 +464,7 @@
                     </thead>
                     <tbody>
                         @forelse ($kelompoks as $index => $kelompok)
-                            <tr>
+                            <tr data-search="{{ mb_strtolower(implode(' ', array_filter([$kelompok->nama_kelompok, $kelompok->desa?->nama_desa, $kelompok->jenis_usaha]))) }}">
                                 <td class="text-ink-500">{{ $index + 1 }}</td>
                                 <td>{{ $kelompok->tahun_pembinaan ?? '-' }}</td>
                                 <td>
@@ -446,7 +478,6 @@
                                         <span class="avatar">{{ mb_strtoupper(mb_substr($kelompok->nama_kelompok ?? 'K', 0, 1)) }}</span>
                                         <div>
                                             <p class="font-semibold">{{ $kelompok->nama_kelompok }}</p>
-                                            <p class="text-xs text-ink-500">ID: KLP-00{{ $kelompok->id }}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -461,6 +492,9 @@
                                 <td class="text-right">
                                     @if (Auth::check() && Auth::user()->isAdmin())
                                         <div class="flex items-center justify-end gap-2">
+                                            <a href="{{ route('kelompok.show', $kelompok->id) }}" class="btn-icon" title="Lihat detail" aria-label="Lihat detail {{ $kelompok->nama_kelompok }}">
+                                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                            </a>
                                             <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
                                                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                             </a>
@@ -480,7 +514,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="14">
+                                <td colspan="16">
                                     <div class="empty-state">
                                         <i class="fa-solid fa-folder-open text-2xl text-ink-400" aria-hidden="true"></i>
                                         Belum ada data kelompok binaan yang terdaftar.

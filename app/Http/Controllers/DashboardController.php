@@ -154,7 +154,36 @@ class DashboardController extends Controller
 
     public function map(): View
     {
-        return view('peta-kelompok');
+        $kelompoks = Kelompok::query()
+            ->with(['kawasan', 'desa'])
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+
+        $locations = $kelompoks->map(fn (Kelompok $kelompok): array => [
+            'nama_kelompok' => $kelompok->nama_kelompok,
+            'status_kelompok' => $kelompok->status_kelompok,
+            'jenis_usaha' => $kelompok->jenis_usaha,
+            'tahun_pembinaan' => $kelompok->tahun_pembinaan,
+            'kawasan' => $kelompok->kawasan?->nama_kawasan,
+            'desa' => $kelompok->desa?->nama_desa,
+            'kecamatan' => $kelompok->kecamatan ?? $kelompok->desa?->kecamatan,
+            'kabupaten' => $kelompok->kabupaten ?? $kelompok->desa?->kabupaten,
+            'latitude' => (float) $kelompok->latitude,
+            'longitude' => (float) $kelompok->longitude,
+            'jumlah_anggota_laki_laki' => $kelompok->jumlah_anggota_laki_laki,
+            'jumlah_anggota_perempuan' => $kelompok->jumlah_anggota_perempuan,
+            'detail_url' => route('kelompok.show', $kelompok),
+        ]);
+
+        return view('peta-kelompok', compact('locations'));
+    }
+
+    public function showKelompok(Kelompok $kelompok): View
+    {
+        $kelompok->load(['kawasan', 'desa']);
+
+        return view('detail_kelompok', compact('kelompok'));
     }
 
     public function editKelompok($id)
@@ -169,11 +198,15 @@ class DashboardController extends Controller
     {
         $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
+            'status_kelompok' => 'required|in:Aktif,Tidak Aktif',
             'kawasan_id' => 'required|exists:kawasans,id',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
             'nama_desa' => 'required|string|max:255',
+            'tahun_pembentukan' => 'nullable|integer|between:1000,9999',
+            'tahun_monitoring' => 'nullable|integer|between:1000,9999',
+            'catatan_kebutuhan_hasil_monev' => 'nullable|string|max:10000',
             'kecamatan' => 'nullable|string|max:255',
             'kabupaten' => 'nullable|string|max:255',
             'sk_kelompok' => 'nullable|string|max:255',
@@ -200,7 +233,11 @@ class DashboardController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'nama_kelompok' => $validated['nama_kelompok'],
+                'status_kelompok' => $validated['status_kelompok'],
                 'nama_ketua' => $validated['nama_ketua'],
+                'tahun_pembentukan' => $validated['tahun_pembentukan'] ?? null,
+                'tahun_monitoring' => $validated['tahun_monitoring'] ?? null,
+                'catatan_kebutuhan_hasil_monev' => $validated['catatan_kebutuhan_hasil_monev'] ?? null,
                 'no_hp' => $request->no_hp,
                 'jenis_usaha' => $validated['jenis_usaha'],
                 'sk_kelompok' => $validated['sk_kelompok'] ?? null,
@@ -219,11 +256,15 @@ class DashboardController extends Controller
     {
         $validated = $request->validate([
             'nama_kelompok' => 'required|string|max:255',
+            'status_kelompok' => 'required|in:Aktif,Tidak Aktif',
             'kawasan_id' => 'required|exists:kawasans,id',
             'nama_ketua' => 'required|string|max:255',
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
             'nama_desa' => 'required|string|max:255',
+            'tahun_pembentukan' => 'nullable|integer|between:1000,9999',
+            'tahun_monitoring' => 'nullable|integer|between:1000,9999',
+            'catatan_kebutuhan_hasil_monev' => 'nullable|string|max:10000',
             'kecamatan' => 'nullable|string|max:255',
             'kabupaten' => 'nullable|string|max:255',
             'sk_kelompok' => 'nullable|string|max:255',
@@ -263,7 +304,11 @@ class DashboardController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'nama_kelompok' => $validated['nama_kelompok'],
+                'status_kelompok' => $validated['status_kelompok'],
                 'nama_ketua' => $validated['nama_ketua'],
+                'tahun_pembentukan' => $validated['tahun_pembentukan'] ?? null,
+                'tahun_monitoring' => $validated['tahun_monitoring'] ?? null,
+                'catatan_kebutuhan_hasil_monev' => $validated['catatan_kebutuhan_hasil_monev'] ?? null,
                 'no_hp' => $request->no_hp,
                 'jenis_usaha' => $validated['jenis_usaha'],
                 'sk_kelompok' => $validated['sk_kelompok'] ?? null,
