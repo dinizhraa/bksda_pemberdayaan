@@ -8,6 +8,7 @@
         'purple' => 'tone-purple',
         'blue' => 'tone-blue',
         'amber' => 'tone-amber',
+        'rose' => 'tone-rose',
     ];
 @endphp
 

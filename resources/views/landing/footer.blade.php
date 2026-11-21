@@ -14,9 +14,10 @@
                     @foreach ($menu as [$id, $label])
                         <li><a href="#{{ $id }}" class="footer-link">{{ $label }}</a></li>
                     @endforeach
-                    @auth
-                        <li><a href="{{ route('dashboard') }}" class="footer-link">Dashboard</a></li>
-                    @endauth
+                    <li><a href="{{ route('visualisasi') }}" class="footer-link">Visualisasi</a></li>
+                    <li><a href="{{ route('kelompok.index') }}" class="footer-link">Kelompok Binaan</a></li>
+                    <li><a href="{{ route('kawasan.index') }}" class="footer-link">Kawasan &amp; NTE</a></li>
+                    <li><a href="{{ route('kelompok.map') }}" class="footer-link">Peta Kawasan</a></li>
                 </ul>
             </nav>
 

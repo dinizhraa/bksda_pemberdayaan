@@ -23,17 +23,11 @@
         </div>
 
         <h2 class="mx-auto max-w-2xl text-3xl font-extrabold tracking-tight sm:text-4xl">Siap mendampingi kelompok binaan dengan lebih terarah?</h2>
-        <p class="mx-auto mt-4 max-w-xl text-brand-100">Masuk untuk membuka dashboard, atau buat akun untuk mulai mencatat.</p>
+        <p class="mx-auto mt-4 max-w-xl text-brand-100">Jelajahi data kelompok binaan dan kawasan konservasi secara terbuka.</p>
 
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            @auth
-                <a href="{{ route('dashboard') }}" data-magnetic class="btn-white">Buka Dashboard</a>
-            @else
-                @if (Route::has('register'))
-                    <button type="button" data-magnetic @click="modal = 'register'" class="btn-white">Buat Akun</button>
-                @endif
-                <button type="button" data-magnetic @click="modal = 'login'" class="inline-flex items-center justify-center rounded-xl border border-white/40 px-6 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">Masuk</button>
-            @endauth
+            <a href="{{ route('visualisasi') }}" data-magnetic class="btn-white">Lihat Visualisasi</a>
+            <a href="{{ route('kelompok.map') }}" data-magnetic class="inline-flex items-center justify-center rounded-xl border border-white/40 px-6 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">Lihat Peta</a>
         </div>
     </div>
 </x-landing-section>

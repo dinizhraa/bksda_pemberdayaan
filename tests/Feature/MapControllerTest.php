@@ -16,7 +16,7 @@ class MapControllerTest extends TestCase
     {
         $kawasan = Kawasan::create(['nama_kawasan' => 'SM Bakiriang']);
 
-        $response = $this->actingAs(User::factory()->create())
+        $response = $this->actingAs(User::factory()->create(['role' => 'admin']))
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
                 'nama_kelompok' => 'Kelompok Peta Lestari',
@@ -56,7 +56,7 @@ class MapControllerTest extends TestCase
     {
         $kawasan = Kawasan::create(['nama_kawasan' => 'SM Bakiriang']);
 
-        $response = $this->actingAs(User::factory()->create())
+        $response = $this->actingAs(User::factory()->create(['role' => 'admin']))
             ->from(route('kelompok.create'))
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
@@ -78,7 +78,7 @@ class MapControllerTest extends TestCase
     {
         $kawasan = Kawasan::create(['nama_kawasan' => 'SM Bakiriang']);
 
-        $response = $this->actingAs(User::factory()->create())
+        $response = $this->actingAs(User::factory()->create(['role' => 'admin']))
             ->from(route('kelompok.create'))
             ->post(route('kelompok.store'), [
                 'kawasan_id' => $kawasan->id,
@@ -99,7 +99,7 @@ class MapControllerTest extends TestCase
 
     public function test_group_coordinates_can_be_updated_from_the_edit_form(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $kawasan = Kawasan::create(['nama_kawasan' => 'SM Bakiriang']);
 
         $this->actingAs($user)
@@ -132,10 +132,10 @@ class MapControllerTest extends TestCase
         ]);
     }
 
-    public function test_map_redirects_guests_to_login(): void
+    public function test_map_is_publicly_available_to_guests(): void
     {
         $response = $this->get(route('kelompok.map'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertOk();
     }
 }

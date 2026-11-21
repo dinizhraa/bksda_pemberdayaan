@@ -1,7 +1,4 @@
 @php
-    // Modal terbuka otomatis bila form di dalamnya gagal divalidasi (redirect kembali ke halaman ini).
-    $modalAwal = $errors->any() ? (old('_form') === 'register' ? 'register' : 'login') : null;
-
     $menu = [
         ['hero', 'Hero'],
         ['informasi', 'Informasi'],
@@ -32,9 +29,8 @@
     </head>
     <body class="app-backdrop">
         <div id="landing"
-             x-data="{ modal: @js($modalAwal), menu: false }"
-             x-effect="document.body.classList.toggle('overflow-hidden', !! modal)"
-             @keydown.escape.window="modal = null; menu = false">
+             x-data="{ menu: false }"
+             @keydown.escape.window="menu = false">
 
             @if (session('success'))
                 <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-cloak
@@ -62,10 +58,6 @@
             </main>
 
             @include('landing.footer')
-
-            @guest
-                @include('landing.auth-modal')
-            @endguest
         </div>
     </body>
 </html>

@@ -14,20 +14,47 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get('/login');
 
-        $response->assertStatus(200);
+        $response->assertOk()
+            ->assertSee('Masuk Admin')
+            ->assertDontSee('/register', false);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    public function test_admins_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->post('/login', [
+            'email' => $admin->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($admin);
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_non_admin_cannot_authenticate_using_the_login_screen(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->post('/login', [
             'email' => $user->email,
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+    }
+
+    public function test_non_admin_cannot_bypass_admin_login_by_submitting_admin_role(): void
+    {
+        $user = User::factory()->create(['role' => 'user']);
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+            'login_as' => 'admin',
+        ]);
+
+        $this->assertGuest();
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

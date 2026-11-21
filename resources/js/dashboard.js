@@ -28,6 +28,9 @@ const GRID = 'rgba(148, 163, 184, 0.22)';
 Chart.defaults.font.family = '"Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif';
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#6a7d8f';
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    Chart.defaults.animation = false;
+}
 
 const juta = (value) => `Rp ${Number(value).toLocaleString('id-ID', { maximumFractionDigits: 1 })} Jt`;
 
@@ -234,7 +237,7 @@ function clusterScatter() {
 
 // Pencarian langsung pada tabel kelompok binaan.
 function tableSearch() {
-    const input = document.getElementById('searchTable');
+    const input = document.getElementById('groupSearch') ?? document.getElementById('searchTable');
     if (!input) return;
 
     input.addEventListener('input', () => {

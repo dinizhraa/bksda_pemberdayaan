@@ -3,7 +3,7 @@
         <i class="fa-solid fa-leaf" aria-hidden="true"></i>
     </span>
     <span class="leading-tight">
-        <span class="block whitespace-nowrap text-lg font-bold tracking-tight max-[420px]:text-sm">Pemberdayaan BKSDA</span>
+        <span class="block whitespace-nowrap text-[1.0625rem] font-bold tracking-tight max-[420px]:text-sm">Pemberdayaan BKSDA</span>
         <span class="block text-xs text-ink-500 max-[420px]:text-[10px]">Aplikasi Penyuluh</span>
     </span>
 </div>
