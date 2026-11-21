@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'landing')->name('home');
+Route::get('/', LandingPageController::class)->name('home');
 
 Route::get('/visualisasi', [DashboardController::class, 'index'])->name('visualisasi');
 Route::get('/kelompok', [DashboardController::class, 'groups'])->name('kelompok.index');

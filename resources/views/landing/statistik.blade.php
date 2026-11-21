@@ -1,6 +1,8 @@
 @php
     // Angka dari data resmi BKSDA Sulteng (18 unit kawasan) dan isi aplikasi ini.
     $angka = [
+        ['users', $jumlahKelompok, 'Kelompok Binaan', 'kelompok terdaftar dalam sistem'],
+        ['map-pin', $jumlahDesaPenyangga, 'Desa Penyangga', 'relasi desa-kawasan bernama'],
         ['mountain-sun', 18, 'Unit kawasan konservasi', 'dikelola Balai KSDA Sulawesi Tengah'],
         ['layer-group', 4, 'Jenis kawasan', 'Cagar Alam, Suaka Margasatwa, Taman Buru, Taman Wisata Alam'],
         ['wand-magic-sparkles', 6, 'Fitur utama', 'tersedia dalam satu aplikasi'],

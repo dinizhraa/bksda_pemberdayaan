@@ -4,8 +4,8 @@
     $jenisKawasan = ['Cagar Alam', 'Suaka Margasatwa', 'Taman Buru', 'Taman Wisata Alam'];
     $statContoh = [
         ['wallet', 'teal', 'Total NTE', '1.24', '1,24', 2, 'Rp ', ' M'],
-        ['people-group', 'purple', 'Kelompok', '48', '48', 0, '', ''],
-        ['mountain-sun', 'green', 'Desa', '126', '126', 0, '', ''],
+        ['people-group', 'purple', 'Kelompok', $jumlahKelompok, $jumlahKelompok, 0, '', ''],
+        ['mountain-sun', 'green', 'Desa', $jumlahDesaPenyangga, $jumlahDesaPenyangga, 0, '', ''],
     ];
     $bars = [38, 62, 48, 80, 58, 92, 70];
 
