@@ -159,16 +159,16 @@
                         <p class="mt-2 text-xs font-medium text-white/75" x-text="date"></p>
                         <p class="mt-2 text-4xl font-extrabold tabular-nums tracking-[0.08em] text-white" x-text="clock"></p>
                     </div>
-                    <img src="{{ asset('images/bksda-editorial-dashboard.svg') }}"
-                         alt="Petugas BKSDA dan kelompok binaan bekerja bersama mengelola data, peta kawasan, dan grafik perkembangan"
-                         class="pointer-events-none absolute bottom-[-10px] right-1/2 z-10 w-[min(390px,96vw)] translate-x-1/2 select-none drop-shadow-xl animate-float-sm sm:bottom-[-14px] sm:right-[-8px] sm:w-[380px] sm:translate-x-0 lg:bottom-[-18px] lg:right-[-24px] lg:w-[440px]"
+                    <img src="{{ asset('images/bksda-kolaborasi-dashboard.svg') }}"
+                         alt="Petugas BKSDA berkolaborasi melihat peta kawasan konservasi dan grafik pemantauan"
+                         class="pointer-events-none absolute bottom-[-10px] right-1/2 z-10 w-[min(390px,96vw)] translate-x-1/2 select-none sm:bottom-[-14px] sm:right-[-8px] sm:w-[380px] sm:translate-x-0 lg:bottom-[-18px] lg:right-[-24px] lg:w-[440px]"
                          width="760" height="440" loading="eager">
                 </div>
             </div>
         </section>
 
         <!-- Kartu statistik -->
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <x-stat-card icon="wallet" tone="teal" label="Total Nilai Ekonomi (NTE)" :chip="number_format($capaian, 1, ',', '.').'%'" note="dari target Rp 1,575 M">
                 <x-rupiah :value="$totalNte" />
             </x-stat-card>
@@ -441,64 +441,60 @@
             </header>
 
             <div class="overflow-x-auto px-3 pb-3">
-                <table class="glass-table" id="kelompokTable">
+                <table class="glass-table min-w-max" id="kelompokTable">
                     <thead>
                         <tr>
-                            <th class="w-14">No.</th>
-                            <th>Tahun</th>
-                            <th>Kawasan</th>
-                            <th>Desa</th>
-                            <th>Kecamatan</th>
-                            <th>Kabupaten</th>
-                            <th>Nama Kelompok</th>
-                            <th>Nama Ketua</th>
-                            <th>No HP</th>
-                            <th>Jenis Usaha</th>
-                            <th>SK Kelompok</th>
-                            <th>Laki-laki</th>
-                            <th>Perempuan</th>
-                            <th>Total Anggota</th>
-                            <th>Jumlah Bantuan</th>
-                            <th class="w-20 text-right">Aksi</th>
+                            @foreach ($groupColumns as $label => $attribute)
+                                <th @class([
+                                    'whitespace-nowrap px-4 py-3 text-left',
+                                    'w-14 text-center' => $attribute === 'no',
+                                    'text-center' => in_array($attribute, ['tahun_pembinaan', 'tahun_pembentukan', 'tahun_monitoring', 'status_kelompok'], true),
+                                ])>{{ $label }}</th>
+                            @endforeach
+                            <th class="w-36 whitespace-nowrap px-4 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($kelompoks as $index => $kelompok)
                             <tr data-search="{{ mb_strtolower(implode(' ', array_filter([$kelompok->nama_kelompok, $kelompok->desa?->nama_desa, $kelompok->jenis_usaha]))) }}">
-                                <td class="text-ink-500">{{ $index + 1 }}</td>
-                                <td>{{ $kelompok->tahun_pembinaan ?? '-' }}</td>
-                                <td>
-                                    <span class="tag"><i class="fa-solid fa-location-dot text-rose-500" aria-hidden="true"></i>{{ $kelompok->kawasan->nama_kawasan ?? '-' }}</span>
-                                </td>
-                                <td>{{ $kelompok->desa?->nama_desa ?? '-' }}</td>
-                                <td>{{ $kelompok->kecamatan ?? $kelompok->desa?->kecamatan ?? '-' }}</td>
-                                <td>{{ $kelompok->kabupaten ?? $kelompok->desa?->kabupaten ?? '-' }}</td>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <span class="avatar">{{ mb_strtoupper(mb_substr($kelompok->nama_kelompok ?? 'K', 0, 1)) }}</span>
-                                        <div>
-                                            <p class="font-semibold">{{ $kelompok->nama_kelompok }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{{ $kelompok->nama_ketua ?? '-' }}</td>
-                                <td>{{ $kelompok->no_hp ?? '-' }}</td>
-                                <td><span class="tag">{{ $kelompok->jenis_usaha ?? '-' }}</span></td>
-                                <td class="max-w-[180px] break-words">{{ $kelompok->sk_kelompok ?? '-' }}</td>
-                                <td>{{ $kelompok->jumlah_anggota_laki_laki ?? '-' }}</td>
-                                <td>{{ $kelompok->jumlah_anggota_perempuan ?? '-' }}</td>
-                                <td>{{ $kelompok->jumlah_anggota ?? 0 }}</td>
-                                <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
-                                <td class="text-right">
+                                @foreach ($groupColumns as $label => $attribute)
+                                    @php($value = $attribute === 'no' ? $index + 1 : data_get($kelompok, $attribute))
+                                    <td @class([
+                                        'px-4 py-3 align-middle whitespace-nowrap' => $attribute !== 'catatan_kebutuhan_hasil_monev',
+                                        'text-ink-500' => $attribute === 'no',
+                                        'text-center' => in_array($attribute, ['no', 'tahun_pembinaan', 'tahun_pembentukan', 'tahun_monitoring', 'status_kelompok'], true),
+                                        'whitespace-nowrap font-semibold text-brand-700' => $attribute === 'jumlah_bantuan',
+                                        'max-w-[180px] px-4 py-3 align-middle whitespace-pre-line break-words' => $attribute === 'catatan_kebutuhan_hasil_monev',
+                                    ])>
+                                        @if ($attribute === 'nama_kelompok')
+                                            <div class="flex min-w-[220px] items-center gap-3">
+                                                <span class="avatar">{{ mb_strtoupper(mb_substr($value ?? 'K', 0, 1)) }}</span>
+                                                <div class="whitespace-nowrap">
+                                                    <p class="font-semibold">{{ $value ?? '-' }}</p>
+                                                </div>
+                                            </div>
+                                        @elseif ($attribute === 'kawasan.nama_kawasan')
+                                            <span class="inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                                                <i class="fa-solid fa-location-dot shrink-0 text-rose-500" aria-hidden="true"></i>
+                                                <span>{{ $value ?? '-' }}</span>
+                                            </span>
+                                        @elseif ($attribute === 'jumlah_bantuan' && $value !== null && $value !== '')
+                                            <x-rupiah :value="$value" full />
+                                        @else
+                                            {{ $value ?? '-' }}
+                                        @endif
+                                    </td>
+                                @endforeach
+                                <td class="whitespace-nowrap px-4 py-3 text-right">
                                     @if (Auth::check() && Auth::user()->isAdmin())
-                                        <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('kelompok.show', $kelompok->id) }}" class="btn-icon" title="Lihat detail" aria-label="Lihat detail {{ $kelompok->nama_kelompok }}">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <a href="{{ route('kelompok.show', $kelompok->id) }}" class="btn-icon shrink-0" title="Lihat detail" aria-label="Lihat detail {{ $kelompok->nama_kelompok }}">
                                                 <i class="fa-solid fa-eye" aria-hidden="true"></i>
                                             </a>
-                                            <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
+                                            <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon shrink-0" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
                                                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                             </a>
-                                            <form action="{{ route('kelompok.destroy', $kelompok->id) }}" method="POST" class="inline">
+                                            <form action="{{ route('kelompok.destroy', $kelompok->id) }}" method="POST" class="inline shrink-0">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-icon-danger" title="Hapus data" aria-label="Hapus {{ $kelompok->nama_kelompok }}"
@@ -514,7 +510,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="16">
+                                <td colspan="{{ count($groupColumns) + 1 }}">
                                     <div class="empty-state">
                                         <i class="fa-solid fa-folder-open text-2xl text-ink-400" aria-hidden="true"></i>
                                         Belum ada data kelompok binaan yang terdaftar.

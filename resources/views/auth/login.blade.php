@@ -12,21 +12,15 @@
     <body class="min-h-screen bg-brand-50 font-sans text-slate-900 antialiased">
         <main class="grid min-h-screen lg:grid-cols-[1.05fr_.95fr]">
             <section class="relative isolate flex min-h-[300px] flex-col overflow-hidden bg-gradient-to-br from-brand-900 via-brand-700 to-brand-500 px-6 py-7 text-white sm:min-h-[340px] sm:px-10 sm:py-9 lg:min-h-screen lg:px-14 lg:py-12 xl:px-20">
-                <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-brand-900/40" aria-hidden="true"></div>
-                <div class="pointer-events-none absolute left-[18%] top-[32%] size-[22rem] rounded-full bg-brand-300/20 blur-3xl" aria-hidden="true"></div>
-                <div class="pointer-events-none absolute bottom-[12%] right-[8%] size-[22rem] rounded-full bg-brand-300/25 blur-3xl" aria-hidden="true"></div>
-                <div class="pointer-events-none absolute bottom-11 right-0 top-[48vh] hidden w-[min(88%,700px)] rounded-[2.25rem] border border-white/20 bg-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_24px_70px_rgba(12,66,62,0.2)] backdrop-blur-[2px] lg:block" aria-hidden="true"></div>
-                <div class="pointer-events-none absolute -left-28 -top-32 size-96 rounded-full border border-white/10" aria-hidden="true"></div>
-                <div class="pointer-events-none absolute -left-16 -top-20 size-72 rounded-full border border-white/10" aria-hidden="true"></div>
 
-                <div class="relative z-20 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-xs font-semibold tracking-wide text-brand-50 backdrop-blur">
+                <div class="relative z-20 inline-flex w-fit items-center gap-2 text-sm font-semibold tracking-wide text-brand-50">
                     <i class="fa-solid fa-leaf text-brand-200" aria-hidden="true"></i>
                     BKSDA Sulawesi Tengah
                 </div>
 
-                <div class="relative z-20 mt-10 max-w-xl sm:mt-12 lg:mt-4 2xl:mt-16">
+                <div class="relative z-20 mt-10 max-w-xl sm:mt-12 lg:mt-4 lg:max-w-[360px] 2xl:mt-16">
                     <p class="text-xs font-bold uppercase tracking-[0.22em] text-brand-100">Portal pengelolaan</p>
-                    <h1 class="mt-4 max-w-lg text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+                    <h1 class="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.4rem] xl:text-5xl">
                         Menjaga alam, menguatkan masyarakat.
                     </h1>
                     <p class="mt-4 max-w-md text-sm leading-6 text-brand-50/80 sm:text-base sm:leading-7">
@@ -35,9 +29,9 @@
                 </div>
 
                 <img
-                    src="{{ asset('images/bksda-editorial-login.svg') }}"
-                    alt="Petugas BKSDA berdiskusi mengelola kelompok binaan di ruang kerja dengan grafik, peta, laptop, dan dokumen"
-                    class="pointer-events-none relative z-10 mt-4 ml-auto w-full max-w-[720px] animate-float-sm opacity-95 drop-shadow-2xl lg:absolute lg:bottom-12 lg:right-2 lg:ml-0 lg:mt-0 lg:w-[min(84%,680px)] lg:max-w-none"
+                    src="{{ asset('images/bksda-kolaborasi-login.svg') }}"
+                    alt="Petugas BKSDA berkolaborasi mengelola peta dan grafik kawasan konservasi pada layar digital"
+                    class="pointer-events-none relative z-10 mt-6 ml-auto block w-full max-w-[720px] select-none lg:absolute lg:bottom-12 lg:right-2 lg:ml-0 lg:mt-0 lg:w-[min(84%,680px)] lg:max-w-none"
                     width="960"
                     height="640"
                     loading="eager"

@@ -14,6 +14,30 @@ class KelompokExportTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const EXPECTED_HEADERS = [
+        'No',
+        'Tahun Pembinaan',
+        'Tahun Pembentukan',
+        'Tahun Monitoring',
+        'Status Kelompok',
+        'Kawasan',
+        'Desa',
+        'Kecamatan',
+        'Kabupaten',
+        'Nama Kelompok',
+        'Nama Ketua',
+        'No HP',
+        'Latitude',
+        'Longitude',
+        'Jenis Usaha',
+        'SK Kelompok',
+        'Jumlah Anggota Laki-laki',
+        'Jumlah Anggota Perempuan',
+        'Total Anggota',
+        'Jumlah Bantuan (Rp)',
+        'Catatan Kebutuhan / Hasil Monev',
+    ];
+
     public function test_admin_can_download_a_filtered_csv_with_all_group_columns(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -21,12 +45,24 @@ class KelompokExportTest extends TestCase
         $desa = Desa::create(['kawasan_id' => $kawasan->id, 'nama_desa' => 'Desa Export']);
         $kelompok = $this->createGroup($kawasan, $desa, 'Kelompok Export Target', [
             'no_hp' => '08123456789',
+            'tahun_pembinaan' => 2015,
+            'tahun_pembentukan' => 2016,
+            'tahun_monitoring' => 2017,
             'jumlah_bantuan' => '12500000.50',
             'latitude' => '-0.9012000',
             'longitude' => '119.8701000',
             'catatan_kebutuhan_hasil_monev' => "Kebutuhan air, jalan, dan pendampingan.\nTindak lanjut lapangan.",
         ]);
-        $this->createGroup($kawasan, $desa, 'Kelompok Export Target Kedua');
+        $this->createGroup($kawasan, $desa, 'Kelompok Export Target Kedua', [
+            'tahun_pembinaan' => null,
+            'tahun_pembentukan' => null,
+            'tahun_monitoring' => null,
+            'no_hp' => null,
+            'latitude' => null,
+            'longitude' => null,
+            'sk_kelompok' => null,
+            'catatan_kebutuhan_hasil_monev' => null,
+        ]);
         $this->createGroup($kawasan, $desa, 'Kelompok Lain');
 
         $response = $this->actingAs($admin)
@@ -50,8 +86,7 @@ class KelompokExportTest extends TestCase
         $this->assertIsArray($row);
         $this->assertIsArray($secondRow);
         $this->assertFalse($empty);
-        $this->assertCount(24, $headers);
-        $this->assertSame(['No', 'Nama Kawasan', 'Nama Desa'], array_slice($headers, 0, 3));
+        $this->assertSame(self::EXPECTED_HEADERS, $headers);
         $this->assertNotContains('ID Kelompok', $headers);
         $this->assertNotContains('ID Kawasan', $headers);
         $this->assertNotContains('ID Desa', $headers);
@@ -59,15 +94,28 @@ class KelompokExportTest extends TestCase
         $this->assertIsArray($exported);
         $this->assertSame('1', $exported['No']);
         $this->assertSame('Aktif', $exported['Status Kelompok']);
-        $this->assertSame('SM Bakiriang', $exported['Nama Kawasan']);
-        $this->assertSame('Desa Export', $exported['Nama Desa']);
-        $this->assertSame('08123456789', $exported['Nomor HP / Kontak']);
+        $this->assertSame('SM Bakiriang', $exported['Kawasan']);
+        $this->assertSame('Desa Export', $exported['Desa']);
+        $this->assertSame('2015', $exported['Tahun Pembinaan']);
+        $this->assertSame('2016', $exported['Tahun Pembentukan']);
+        $this->assertSame('2017', $exported['Tahun Monitoring']);
+        $this->assertSame('08123456789', $exported['No HP']);
         $this->assertSame('12500000.50', $exported['Jumlah Bantuan (Rp)']);
         $this->assertSame('-0.9012000', $exported['Latitude']);
         $this->assertSame("Kebutuhan air, jalan, dan pendampingan.\nTindak lanjut lapangan.", $exported['Catatan Kebutuhan / Hasil Monev']);
         $secondExported = array_combine($headers, $secondRow);
         $this->assertIsArray($secondExported);
         $this->assertSame('2', $secondExported['No']);
+        $this->assertSame('-', $secondExported['Tahun Pembinaan']);
+        $this->assertSame('-', $secondExported['Tahun Pembentukan']);
+        $this->assertSame('-', $secondExported['Tahun Monitoring']);
+        $this->assertSame('-', $secondExported['Kecamatan']);
+        $this->assertSame('-', $secondExported['Kabupaten']);
+        $this->assertSame('-', $secondExported['No HP']);
+        $this->assertSame('-', $secondExported['Latitude']);
+        $this->assertSame('-', $secondExported['Longitude']);
+        $this->assertSame('-', $secondExported['SK Kelompok']);
+        $this->assertSame('-', $secondExported['Catatan Kebutuhan / Hasil Monev']);
     }
 
     public function test_admin_can_download_a_filtered_excel_workbook(): void
@@ -80,7 +128,18 @@ class KelompokExportTest extends TestCase
             'tahun_monitoring' => 2026,
             'catatan_kebutuhan_hasil_monev' => 'Catatan <lengkap> & aman',
         ]);
-        $this->createGroup($kawasan, $desa, 'Kelompok Excel Target Kedua');
+        $this->createGroup($kawasan, $desa, 'Kelompok Excel Target Kedua', [
+            'tahun_pembinaan' => null,
+            'tahun_pembentukan' => null,
+            'tahun_monitoring' => null,
+            'kecamatan' => null,
+            'kabupaten' => null,
+            'no_hp' => null,
+            'latitude' => null,
+            'longitude' => null,
+            'sk_kelompok' => null,
+            'catatan_kebutuhan_hasil_monev' => null,
+        ]);
         $this->createGroup($kawasan, $desa, 'Kelompok Excel Lain');
 
         $response = $this->actingAs($admin)
@@ -113,8 +172,24 @@ class KelompokExportTest extends TestCase
         unlink($path);
 
         $this->assertIsString($sheet);
+        $worksheet = simplexml_load_string($sheet);
+        $this->assertNotFalse($worksheet);
+        $worksheet->registerXPathNamespace('x', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        $headerNodes = $worksheet->xpath('//x:row[@r="1"]/x:c/x:is/x:t');
+        $this->assertIsArray($headerNodes);
+        $this->assertSame(
+            self::EXPECTED_HEADERS,
+            array_map(static fn (\SimpleXMLElement $node): string => (string) $node, $headerNodes),
+        );
         $this->assertStringContainsString('Tahun Pembentukan', $sheet);
+        $this->assertStringContainsString('Tahun Pembinaan', $sheet);
         $this->assertStringContainsString('Tahun Monitoring', $sheet);
+        $this->assertStringContainsString('<c r="B2" s="2"><v>2025</v></c>', $sheet);
+        $this->assertStringContainsString('<c r="C2" s="2"><v>2017</v></c>', $sheet);
+        $this->assertStringContainsString('<c r="D2" s="2"><v>2026</v></c>', $sheet);
+        foreach (['B3', 'C3', 'D3', 'H3', 'I3', 'L3', 'M3', 'N3', 'P3', 'U3'] as $cell) {
+            $this->assertMatchesRegularExpression('/<c r="'.$cell.'"[^>]*>.*?>-<\/t>.*?<\/c>/', $sheet);
+        }
         $this->assertStringContainsString('Status Kelompok', $sheet);
         $this->assertStringContainsString('Aktif', $sheet);
         $this->assertStringContainsString('Catatan Kebutuhan / Hasil Monev', $sheet);
@@ -125,9 +200,11 @@ class KelompokExportTest extends TestCase
         $this->assertStringContainsString('r="A2" s="2"><v>1</v>', $sheet);
         $this->assertStringContainsString('r="A3" s="2"><v>2</v>', $sheet);
         $this->assertStringContainsString('<c r="B1" s="1" t="inlineStr">', $sheet);
-        $this->assertStringContainsString('>Nama Kawasan</t>', $sheet);
-        $this->assertStringContainsString('<c r="C1" s="1" t="inlineStr">', $sheet);
-        $this->assertStringContainsString('>Nama Desa</t>', $sheet);
+        $this->assertStringContainsString('>Tahun Pembinaan</t>', $sheet);
+        $this->assertStringContainsString('<c r="F1" s="1" t="inlineStr">', $sheet);
+        $this->assertStringContainsString('>Kawasan</t>', $sheet);
+        $this->assertStringContainsString('<c r="G1" s="1" t="inlineStr">', $sheet);
+        $this->assertStringContainsString('>Desa</t>', $sheet);
         $this->assertStringNotContainsString('ID Kelompok', $sheet);
         $this->assertStringNotContainsString('ID Kawasan', $sheet);
         $this->assertStringNotContainsString('ID Desa', $sheet);

@@ -45,6 +45,12 @@
             </div>
 
             <div>
+                <x-input-label for="tahun_pembinaan" value="Tahun Pembinaan" />
+                <x-text-input id="tahun_pembinaan" name="tahun_pembinaan" type="number" min="1000" max="9999" step="1" inputmode="numeric" class="mt-1.5 block w-full" :value="old('tahun_pembinaan', $kelompok->tahun_pembinaan ?? '')" placeholder="Contoh: 2026" />
+                <x-input-error :messages="$errors->get('tahun_pembinaan')" class="mt-1.5" />
+            </div>
+
+            <div>
                 <x-input-label for="tahun_pembentukan" value="Tahun Pembentukan Kelompok" />
                 <x-text-input id="tahun_pembentukan" name="tahun_pembentukan" type="number" min="1000" max="9999" step="1" inputmode="numeric" class="mt-1.5 block w-full" :value="old('tahun_pembentukan', $kelompok->tahun_pembentukan ?? '')" placeholder="Contoh: 2020" />
                 <x-input-error :messages="$errors->get('tahun_pembentukan')" class="mt-1.5" />

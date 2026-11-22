@@ -22,9 +22,9 @@
         <dl class="grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2">
             @foreach ([
                 'Tahun Pembinaan' => $kelompok->tahun_pembinaan ?? '-',
-                'Status Kelompok' => $kelompok->status_kelompok ?? '-',
                 'Tahun Pembentukan' => $kelompok->tahun_pembentukan ?? '-',
                 'Tahun Monitoring' => $kelompok->tahun_monitoring ?? '-',
+                'Status Kelompok' => $kelompok->status_kelompok ?? '-',
                 'Kawasan Konservasi' => $kelompok->kawasan?->nama_kawasan ?? '-',
                 'Desa' => $kelompok->desa?->nama_desa ?? '-',
                 'Kecamatan' => $kelompok->kecamatan ?? $kelompok->desa?->kecamatan ?? '-',

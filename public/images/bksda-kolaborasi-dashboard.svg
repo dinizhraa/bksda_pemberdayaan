@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="440" viewBox="0 0 760 440" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Kolaborasi pemantauan kawasan konservasi</title>
+  <desc id="desc">Petugas BKSDA mengelola peta kawasan dan grafik pemantauan bersama tim lapangan</desc>
+  <style>
+    @keyframes person-shift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-1px); }
+    }
+
+    @keyframes bars-rise {
+      from { transform: scaleY(.58); opacity: .65; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+    .person {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: person-shift 5.4s ease-in-out infinite;
+    }
+
+    .person.delay { animation-delay: -2s; }
+
+    .bar {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: bars-rise .85s cubic-bezier(.2, .7, .2, 1) both;
+    }
+
+    .bar.delay-1 { animation-delay: .12s; }
+    .bar.delay-2 { animation-delay: .24s; }
+    .bar.delay-3 { animation-delay: .36s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="screen" x1="286" y1="114" x2="525" y2="284" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAFFF4"/>
+      <stop offset="1" stop-color="#D8F3E2"/>
+    </linearGradient>
+    <filter id="monitor-shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#073B52" flood-opacity=".27"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#monitor-shadow)">
+    <rect x="209" y="102" width="343" height="242" rx="17" fill="#193D4B" stroke="#0A3345" stroke-width="5"/>
+    <rect x="225" y="118" width="311" height="210" rx="9" fill="url(#screen)"/>
+    <path d="M225 127c0-5 4-9 9-9h293c5 0 9 4 9 9v21H225v-21Z" fill="#E6F3E9"/>
+    <circle cx="239" cy="136" r="3" fill="#E68067"/><circle cx="250" cy="136" r="3" fill="#E8C06E"/><circle cx="261" cy="136" r="3" fill="#73B998"/>
+    <rect x="278" y="132" width="101" height="7" rx="3.5" fill="#BCDACE"/>
+    <rect x="410" y="130" width="51" height="12" rx="6" fill="#D8EDE0"/>
+    <circle cx="419" cy="136" r="2.5" fill="#56AE8C"/>
+    <text x="244" y="166" fill="#356A63" font-family="Arial, sans-serif" font-size="8" font-weight="700">PEMANTAUAN TUTUPAN HUTAN</text>
+    <rect x="242" y="177" width="182" height="132" rx="7" fill="#F7FCF4"/>
+    <path d="M253 286h159m-159-28h159m-159-28h159m-159-28h159" stroke="#DCEBE0" stroke-width="1"/>
+    <path d="M265 284v-30" stroke="#75C8A4" stroke-width="13" stroke-linecap="round" class="bar"/>
+    <path d="M298 284v-53" stroke="#3DB79A" stroke-width="13" stroke-linecap="round" class="bar delay-1"/>
+    <path d="M331 284v-40" stroke="#E4B96B" stroke-width="13" stroke-linecap="round" class="bar delay-2"/>
+    <path d="M364 284v-69" stroke="#258F82" stroke-width="13" stroke-linecap="round" class="bar delay-3"/>
+    <path d="M397 284v-83" stroke="#7BBE8A" stroke-width="13" stroke-linecap="round" class="bar delay-3"/>
+    <path d="m252 239 34-23 32 12 38-32 50-16" stroke="#E27C65" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="405" cy="178" r="3.5" fill="#E27C65"/>
+    <rect x="435" y="177" width="89" height="132" rx="7" fill="#E5F3E6"/>
+    <text x="444" y="191" fill="#4C7770" font-family="Arial, sans-serif" font-size="6.5" font-weight="700">PETA KAWASAN</text>
+    <path d="M441 257c13-25 23-31 34-23 8 7 13 4 20-9 7-14 16-16 25-3v74h-79v-39Z" fill="#A4D5A2"/>
+    <path d="M441 273c14-14 24-11 35-3 11 8 20 1 28-9 7-8 12-7 16-5v53h-79v-36Z" fill="#5FAE83"/>
+    <path d="M441 287c15-8 24-2 36 2 12 5 22-4 31-11 5-3 9-4 12-3v27h-79v-15Z" fill="#328D78"/>
+    <path d="M468 231c0-6 4-10 10-10 5 0 9 4 9 10 0 8-9 17-9 17s-10-9-10-17Z" fill="#E47E65"/>
+    <circle cx="478" cy="231" r="3" fill="#FFF8E9"/>
+    <path d="M449 298h26m5 0h34" stroke="#B2D3BA" stroke-width="2" stroke-linecap="round"/>
+    <path d="M329 344h105l20 43H309l20-43Z" fill="#225160"/>
+    <path d="M291 386c10-7 24-10 40-10h101c16 0 30 3 40 10l7 10H283l8-10Z" fill="#D9F0E7"/>
+    <path d="M306 390h158" stroke="#8CCBB4" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <g class="person">
+    <path d="M136 290c0 24 1 43-5 69h18l10-42 8 43h19l-1-71-49 1Z" fill="#334C4B" stroke="#203C3C" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M135 227c9-9 30-12 45-5 13 6 15 24 14 41l-4 36h-60l3-35c1-17-5-28 2-37Z" fill="#E9806C" stroke="#8C4B50" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M151 220c3 8 9 12 17 12 9 0 15-5 17-13l-3-12h-28l-3 13Z" fill="#C98264"/>
+    <path d="M135 183c0-22 13-37 33-37 21 0 34 16 33 38l-4 22-12-9-3-18c-12 6-25 6-39 0l-2 22-10 6-4-14c-2-4 0-8 1-10Z" fill="#3B302D" stroke="#2B3434" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M143 178c7-17 20-24 36-21 12 2 20 11 23 23-13-6-23-7-36-4-8 3-15 6-23 7Z" fill="#815042"/>
+    <path d="M144 185c6-6 13-9 21-9 11 0 20 4 26 11l-1 19c-1 12-10 21-21 21-11 0-20-9-22-21l-3-21Z" fill="#D99771" stroke="#805244" stroke-width="2.5"/>
+    <path d="M149 189c4-4 8-5 13-5m18 0c4-1 8 1 10 3" stroke="#63443C" stroke-width="2" stroke-linecap="round"/>
+    <path d="M153 198h2m18 0h2m-12 0v7l-3 1m0 5c3 2 6 1 8-1" stroke="#2A3F3C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M151 240h18l-9 13-9-13Z" fill="#F8F1DF"/>
+    <path d="m137 250-14 30 9 6 23-26m34-10 14 19-6 8-25-15" fill="#E77A68" stroke="#8C4B50" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="m132 281-17 7m83-24 26-17" stroke="#C98264" stroke-width="9" stroke-linecap="round"/>
+    <path d="m113 288-6 4m118-48 8-6" stroke="#C98264" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M229 241c4-4 8-5 11-2 3 2 3 5 1 8l-7 5-8-5 3-6Z" fill="#D99771" stroke="#805244" stroke-width="1.7"/>
+  </g>
+
+  <g class="person delay">
+    <path d="M566 293c0 23 2 43-5 69h19l11-42 9 43h19l-3-71-50 1Z" fill="#344B4C" stroke="#203B3E" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M562 229c10-10 31-13 48-5 13 6 16 25 14 43l-4 35h-61l2-36c1-17-5-28 1-37Z" fill="#72C2A9" stroke="#1B6D69" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M580 221c3 8 9 12 18 12 9 0 15-5 18-13l-3-12h-30l-3 13Z" fill="#B7795B"/>
+    <path d="M563 184c1-22 14-37 35-37 22 0 35 16 34 38l-3 22-14-9-3-19c-13 6-27 6-41 0l-1 22-11 7-4-15c-1-4 0-8 2-10Z" fill="#2F3533" stroke="#263331" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M571 179c7-17 21-24 37-21 12 2 21 11 24 23-14-6-24-7-37-4-9 3-16 6-24 7Z" fill="#50423A"/>
+    <path d="M572 186c6-6 13-9 22-9 11 0 20 4 26 11l-1 19c-1 12-10 21-21 21-11 0-21-9-23-21l-3-21Z" fill="#C98768" stroke="#7D5143" stroke-width="2.5"/>
+    <path d="M577 190c4-4 8-5 13-5m19 1c4-1 8 1 10 3" stroke="#5E443C" stroke-width="2" stroke-linecap="round"/>
+    <path d="M582 199h2m19 0h2m-12 0v7l-3 1m0 5c3 2 6 1 8-1" stroke="#2A3F3C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m567 251-23 16 6 10 38-15m35-11 15 18-7 8-26-16" fill="#E9F0E5" stroke="#2B7974" stroke-width="2.7" stroke-linejoin="round"/>
+    <path d="m550 273-14 5m65-17 15 10" stroke="#C98768" stroke-width="9" stroke-linecap="round"/>
+    <path d="M532 280c-4 3-6 7-5 11l10-1 5-8m81-12 8 2 6 6" fill="#C98768" stroke="#7D5143" stroke-width="1.8"/>
+    <rect x="610" y="265" width="28" height="38" rx="3" fill="#F3E4BD" stroke="#986E50" stroke-width="1.5" transform="rotate(-8 610 265)"/>
+    <path d="m615 275 14-2m-13 8 12-2m-11 8 13-2" stroke="#62A98D" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <g class="person">
+    <path d="M514 63c0 19 0 38-5 55h14l8-33 7 34h15l-2-58-37 2Z" fill="#315966" stroke="#1A414D" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M508 32c8-7 23-9 36-4 10 5 12 19 11 32l-3 21h-46l1-23c1-13-4-20 1-26Z" fill="#E6B75E" stroke="#9D7041" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M520 28c3 6 7 9 14 9 7 0 12-4 14-10l-2-9h-23l-3 10Z" fill="#B97A5C"/>
+    <path d="M507 7c1-17 11-27 27-27 17 0 28 12 26 29l-2 16-10-7-2-14c-10 5-21 5-32 0l-1 16-8 5-3-11c-1-3 0-5 1-7Z" fill="#3A332E" stroke="#2A3432" stroke-width="2.7" stroke-linejoin="round" transform="translate(0 26)"/>
+    <path d="M515 32c5-13 16-18 28-16 9 2 15 8 18 18-10-4-18-5-28-2-6 2-12 5-18 5Z" fill="#85533F"/>
+    <path d="M516 37c4-5 10-7 16-7 8 0 15 3 19 8l-1 14c-1 9-7 15-16 15-8 0-15-6-17-15l-1-15Z" fill="#D0906B" stroke="#805244" stroke-width="2"/>
+    <path d="M520 41c3-3 7-4 11-4m14 1c3-1 6 1 8 2m-18 1v5l-2 1m0 4c3 1 5 1 7-1" stroke="#354341" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m508 47-13 15 7 6 19-12m34-10 14 14-6 7-24-11" fill="#E7B75E" stroke="#9D7041" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="m502 63-8 4m75-7 15 4" stroke="#D0906B" stroke-width="7" stroke-linecap="round"/>
+    <path d="M585 64h25v12h-25z" fill="#CDEEE2" stroke="#3D8D84" stroke-width="1.7"/>
+    <path d="M585 76v10m25-10v10" stroke="#A9DCCB" stroke-width="2"/>
+  </g>
+
+</svg>

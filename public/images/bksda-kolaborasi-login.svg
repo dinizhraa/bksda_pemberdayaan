@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Kolaborasi pengelolaan kawasan konservasi</title>
+  <desc id="desc">Tiga petugas BKSDA membahas grafik dan peta kawasan konservasi pada layar digital</desc>
+  <style>
+    @keyframes staff-breathe {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-1.5px); }
+    }
+
+    @keyframes bar-grow {
+      from { transform: scaleY(.55); opacity: .6; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+    .staff {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: staff-breathe 5.2s ease-in-out infinite;
+    }
+
+    .staff.delay { animation-delay: -2.1s; }
+
+    .bar {
+      transform-box: fill-box;
+      transform-origin: center bottom;
+      animation: bar-grow .9s cubic-bezier(.2, .7, .2, 1) both;
+    }
+
+    .bar.delay-1 { animation-delay: .12s; }
+    .bar.delay-2 { animation-delay: .24s; }
+    .bar.delay-3 { animation-delay: .36s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="screen" x1="371" y1="183" x2="655" y2="425" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAFFF4"/>
+      <stop offset="1" stop-color="#D7F3E2"/>
+    </linearGradient>
+    <linearGradient id="monitor" x1="325" y1="174" x2="689" y2="463" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A3947"/>
+      <stop offset="1" stop-color="#102B39"/>
+    </linearGradient>
+    <linearGradient id="coral-shirt" x1="175" y1="294" x2="246" y2="423" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EF8D74"/>
+      <stop offset="1" stop-color="#D86662"/>
+    </linearGradient>
+    <linearGradient id="ranger-shirt" x1="762" y1="291" x2="835" y2="422" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#75C8AF"/>
+      <stop offset="1" stop-color="#258E86"/>
+    </linearGradient>
+    <filter id="screen-shadow" x="-20%" y="-20%" width="140%" height="155%">
+      <feDropShadow dx="0" dy="13" stdDeviation="11" flood-color="#073B52" flood-opacity=".28"/>
+    </filter>
+    <filter id="figure-shadow" x="-25%" y="-20%" width="150%" height="155%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#073B52" flood-opacity=".18"/>
+    </filter>
+    <filter id="info-card-shadow" x="-20%" y="-25%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#153D3A" flood-opacity=".16"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(48 44)" filter="url(#info-card-shadow)">
+    <rect width="270" height="106" rx="15" fill="#FCFFF8" stroke="#E3F0E5" stroke-width="2"/>
+    <circle cx="24" cy="24" r="13" fill="#E2F3E7"/>
+    <path d="M18 26h12m-9-5h6m-6 10h8" stroke="#238A78" stroke-width="2" stroke-linecap="round"/>
+    <text x="46" y="23" fill="#4B6D64" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing=".5">PERKEMBANGAN KELOMPOK</text>
+    <path d="M17 81h236M17 66h236M17 51h236" stroke="#E7EFE8" stroke-width="1"/>
+    <path d="m23 74 42-11 38 7 39-22 42 8 42-20 27 5" stroke="#359B83" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="226" cy="36" r="4" fill="#E7836A"/>
+    <circle cx="184" cy="56" r="3" fill="#359B83"/>
+  </g>
+
+  <g transform="translate(365 52)" filter="url(#info-card-shadow)">
+    <rect width="225" height="84" rx="15" fill="#FCFFF8" stroke="#E3F0E5" stroke-width="2"/>
+    <circle cx="31" cy="31" r="17" fill="#E2F3E7"/>
+    <path d="M31 40V24m0 9c-7 0-11-4-11-10 7 0 11 4 11 10Zm0-3c0-7 4-11 11-11 0 7-4 11-11 11Z" fill="#48A77D"/>
+    <text x="59" y="29" fill="#4B6D64" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing=".45">PENDAMPINGAN AKTIF</text>
+    <text x="59" y="47" fill="#78928A" font-family="Arial, sans-serif" font-size="8">Koordinasi dan pemantauan</text>
+    <rect x="59" y="59" width="72" height="6" rx="3" fill="#D9EDE0"/>
+    <rect x="59" y="59" width="50" height="6" rx="3" fill="#64B48C"/>
+    <circle cx="201" cy="31" r="5" fill="#71BD8F"/>
+    <path d="m198 31 2 2 4-5" stroke="#FFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(770 50)" filter="url(#info-card-shadow)">
+    <rect width="160" height="128" rx="15" fill="#FCFFF8" stroke="#E3F0E5" stroke-width="2"/>
+    <text x="15" y="22" fill="#4B6D64" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing=".45">KAWASAN BINAAN</text>
+    <path d="M15 34h130v78H15z" fill="#E8F4E8"/>
+    <path d="m15 81 24-27 21 9 23-19 23 14 19-9 20 18v45H15V81Z" fill="#B5D9A8"/>
+    <path d="m15 89 29-19 19 10 24-17 24 11 22-13 22 17v34H15V89Z" fill="#68B587"/>
+    <path d="M15 101c21-10 35 3 52-2 17-5 25-16 44-12 13 3 22 11 34 8v17H15v-11Z" fill="#318B76"/>
+    <path d="M75 64c0-6 4-10 9-10s9 4 9 10c0 7-9 16-9 16s-9-9-9-16Z" fill="#E7836A"/>
+    <circle cx="84" cy="64" r="2.5" fill="#FFF8E9"/>
+  </g>
+
+  <g filter="url(#screen-shadow)">
+    <rect x="276" y="168" width="409" height="291" rx="21" fill="url(#monitor)" stroke="#0A3345" stroke-width="7"/>
+    <rect x="294" y="187" width="373" height="254" rx="11" fill="url(#screen)"/>
+    <path d="M294 198c0-6 5-11 11-11h351c6 0 11 5 11 11v28H294v-28Z" fill="#E6F3E9"/>
+    <circle cx="311" cy="207" r="4" fill="#E68067"/>
+    <circle cx="325" cy="207" r="4" fill="#E8C06E"/>
+    <circle cx="339" cy="207" r="4" fill="#73B998"/>
+    <rect x="357" y="202" width="132" height="9" rx="4.5" fill="#B8D9CC"/>
+    <rect x="517" y="200" width="54" height="13" rx="6.5" fill="#D8EDE0"/>
+    <circle cx="526" cy="206.5" r="3" fill="#56AE8C"/>
+    <path d="M528 242h120" stroke="#C6DED1" stroke-width="1.5"/>
+    <text x="315" y="251" fill="#356A63" font-family="Arial, sans-serif" font-size="10" font-weight="700">PERKEMBANGAN KAWASAN</text>
+    <text x="315" y="268" fill="#77928A" font-family="Arial, sans-serif" font-size="8">Monitoring tutupan hutan</text>
+    <rect x="315" y="282" width="214" height="134" rx="8" fill="#F7FCF4"/>
+    <path d="M330 392h181m-181-33h181m-181-33h181m-181-32h181" stroke="#DCEBE0" stroke-width="1"/>
+    <path d="M342 390v-33" stroke="#75C8A4" stroke-width="17" stroke-linecap="round" class="bar"/>
+    <path d="M379 390v-62" stroke="#3DB79A" stroke-width="17" stroke-linecap="round" class="bar delay-1"/>
+    <path d="M416 390v-47" stroke="#E4B96B" stroke-width="17" stroke-linecap="round" class="bar delay-2"/>
+    <path d="M453 390v-81" stroke="#258F82" stroke-width="17" stroke-linecap="round" class="bar delay-3"/>
+    <path d="M490 390v-97" stroke="#7BBE8A" stroke-width="17" stroke-linecap="round" class="bar delay-3"/>
+    <path d="m329 344 40-28 38 15 43-38 58-19" stroke="#E27C65" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="509" cy="274" r="4" fill="#E27C65"/>
+    <rect x="542" y="253" width="109" height="163" rx="8" fill="#E5F3E6"/>
+    <text x="553" y="271" fill="#4C7770" font-family="Arial, sans-serif" font-size="7" font-weight="700" letter-spacing=".4">ZONA TERPANTAU</text>
+    <path d="M550 355c15-30 27-37 40-27 9 8 15 5 23-11 8-17 19-19 31-4v82h-94v-40Z" fill="#A4D5A2"/>
+    <path d="M550 372c17-17 29-13 42-4 13 10 23 1 33-11 8-9 14-8 19-6v44h-94v-23Z" fill="#5FAE83"/>
+    <path d="M550 384c17-9 28-2 42 3 14 6 27-5 38-13 6-4 10-5 14-4v25h-94v-11Z" fill="#328D78"/>
+    <path d="M581 326c0-7 5-12 12-12 6 0 11 5 11 12 0 9-11 21-11 21s-12-12-12-21Z" fill="#E47E65"/>
+    <circle cx="593" cy="326" r="3.5" fill="#FFF8E9"/>
+    <path d="M555 399h37m7 0h35" stroke="#B2D3BA" stroke-width="2" stroke-linecap="round"/>
+    <rect x="413" y="459" width="137" height="17" rx="4" fill="#1B4050"/>
+    <path d="M447 477h68l25 56H420l27-56Z" fill="#234F5D"/>
+    <path d="M401 533c10-8 28-12 46-12h70c19 0 36 4 47 12l8 13H392l9-13Z" fill="#D9F0E7"/>
+    <path d="M416 538h141" stroke="#8CCBB4" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <g class="staff" filter="url(#figure-shadow)">
+    <path d="M174 420c1 31 2 57-6 89h22l14-54 9 55h23l-1-91-61 1Z" fill="#334C4B" stroke="#203C3C" stroke-width="3" stroke-linejoin="round"/>
+    <path d="m166 502 27 1 8 13h-40c-6-4-4-10 5-14Zm48 2 21-3 9 14h-36c-6-4-4-9 6-11Z" fill="#EAF0E6" stroke="#315052" stroke-width="2.5"/>
+    <path d="M171 298c12-12 39-16 59-7 17 8 20 34 18 58l-5 74h-76l3-70c2-29-8-42 1-55Z" fill="url(#coral-shirt)" stroke="#8C4B50" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M188 291c5 11 13 17 24 17 11 0 20-6 24-17l-4-16h-41l-3 16Z" fill="#C98264" stroke="#805244" stroke-width="2"/>
+    <path d="M170 249c0-29 17-49 43-49 28 0 45 21 43 50l-5 29-16-12-4-24c-16 7-34 7-51 0l-2 29-13 8-5-19c-2-4-1-8 0-12Z" fill="#3B302D" stroke="#2B3434" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M179 243c9-22 26-31 47-27 16 3 27 14 31 30-17-8-31-10-47-5-11 4-21 8-31 9Z" fill="#815042"/>
+    <path d="M181 251c7-8 17-12 28-12 14 0 26 5 34 15l-2 25c-1 16-13 27-28 27-14 0-26-12-29-27l-3-28Z" fill="#D99771" stroke="#805244" stroke-width="3"/>
+    <path d="M187 255c5-5 11-7 18-6m23 1c5-1 10 1 14 4" stroke="#63443C" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M192 267h3m23 0h3" stroke="#2A3F3C" stroke-width="3" stroke-linecap="round"/>
+    <path d="M209 267v10l-4 2" stroke="#A96550" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M202 287c5 3 10 3 15-1" stroke="#8C4B47" stroke-width="2" stroke-linecap="round"/>
+    <path d="M190 312h23l-11 16-12-16Z" fill="#F8F1DF"/>
+    <path d="m171 325-20 42 11 8 33-35m50-12 20 27-8 10-34-21" fill="#E77A68" stroke="#8C4B50" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="m159 369-20 5m99-40 34-16" stroke="#C98264" stroke-width="12" stroke-linecap="round"/>
+    <path d="m137 374-7 5m139-61 10-8" stroke="#C98264" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M278 319c5-5 10-6 15-3 3 2 4 6 1 10l-9 6-10-6 3-7Z" fill="#D99771" stroke="#805244" stroke-width="2"/>
+    <path d="M178 356c13 7 27 10 42 10" stroke="#F6B296" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M180 333h14m-14 7h14" stroke="#F9D8C5" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g class="staff delay" filter="url(#figure-shadow)">
+    <path d="M766 408c-1 33 2 62-5 101h23l16-61 12 62h24l-5-104-65 2Z" fill="#344B4C" stroke="#203B3E" stroke-width="3" stroke-linejoin="round"/>
+    <path d="m758 495 28 1 8 13h-41c-7-4-5-10 5-14Zm55 5 23-3 9 13h-38c-6-4-4-8 6-10Z" fill="#E6EEE5" stroke="#315052" stroke-width="2.5"/>
+    <path d="M761 301c13-13 42-18 64-7 18 9 21 35 19 61l-5 73h-80l2-74c1-26-7-42 0-53Z" fill="url(#ranger-shirt)" stroke="#1B6D69" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M781 292c5 11 13 17 25 17 12 0 21-7 24-18l-4-16h-42l-3 17Z" fill="#B7795B" stroke="#754C40" stroke-width="2"/>
+    <path d="M761 249c1-29 19-49 46-49 28 0 45 21 44 50l-4 29-17-12-4-24c-17 8-36 7-53 0l-2 29-13 9-6-20c-1-4 0-8 1-12Z" fill="#2F3533" stroke="#263331" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M770 244c9-22 27-31 48-27 16 3 28 14 32 30-18-8-32-10-48-5-11 4-21 8-32 9Z" fill="#50423A"/>
+    <path d="M772 252c7-8 17-12 29-12 14 0 26 5 34 15l-2 25c-1 16-13 27-28 27-14 0-27-12-29-27l-4-28Z" fill="#C98768" stroke="#7D5143" stroke-width="3"/>
+    <path d="M778 256c5-5 11-7 18-6m24 1c5-1 10 1 14 4" stroke="#5E443C" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M784 268h3m24 0h3" stroke="#2A3F3C" stroke-width="3" stroke-linecap="round"/>
+    <path d="M802 268v10l-4 2" stroke="#A76650" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M794 289c5 3 11 3 16-1" stroke="#874D47" stroke-width="2" stroke-linecap="round"/>
+    <path d="m782 314 22 17 24-18-8-6h-31l-7 7Z" fill="#F6F2E5" stroke="#BEDBCB" stroke-width="2"/>
+    <path d="M804 332v46m-22-35 22 20 23-20" stroke="#A5D1C2" stroke-width="2" stroke-linecap="round"/>
+    <path d="M762 328h-9v18h9m76-18h9v18h-9" fill="#E0B66D" stroke="#805E46" stroke-width="1.8"/>
+    <path d="m762 337-30 19 7 12 45-18m59-18 22 25-8 10-37-23" fill="#E9F0E5" stroke="#2B7974" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="m738 365-18 8m137-21 20 14" stroke="#C98768" stroke-width="12" stroke-linecap="round"/>
+    <path d="M716 370c-6 4-8 9-7 15l13-1 7-11m157-20 10 3 8 9" fill="#C98768" stroke="#7D5143" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="820" y="352" width="38" height="50" rx="4" fill="#F3E4BD" stroke="#986E50" stroke-width="2" transform="rotate(-8 820 352)"/>
+    <path d="m826 365 20-3m-19 10 16-3m-15 10 17-3" stroke="#62A98D" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="804" cy="343" r="7" fill="#E3B66F" stroke="#97704E" stroke-width="1.5"/>
+  </g>
+
+  <g class="staff" filter="url(#figure-shadow)">
+    <path d="M664 122c-1 28 1 57-5 81h17l10-43 8 44h19l-2-80-47-2Z" fill="#2D5662" stroke="#1A414D" stroke-width="3" stroke-linejoin="round"/>
+    <path d="m656 193 21 1 7 11h-31c-5-3-4-8 3-12Zm41 2 17-2 7 11h-29c-5-3-3-7 5-9Z" fill="#E8F0E7" stroke="#2B5861" stroke-width="2"/>
+    <path d="M655 77c10-9 30-12 46-5 13 6 16 25 14 43l-4 22h-59l2-25c1-19-5-28 1-35Z" fill="#E6B75E" stroke="#9D7041" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M670 72c3 8 9 12 17 12 9 0 15-5 18-13l-3-12h-30l-2 13Z" fill="#B97A5C"/>
+    <path d="M654 44c0-23 13-38 35-38 22 0 36 16 34 39l-3 22-13-9-3-19c-13 6-27 6-42 0l-1 21-11 7-4-15c-1-3 0-6 1-8Z" fill="#3A332E" stroke="#2A3432" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M662 41c7-17 21-24 38-20 12 2 21 11 24 23-14-6-25-8-38-4-9 3-16 6-24 7Z" fill="#85533F"/>
+    <path d="M663 47c6-6 13-9 22-9 11 0 20 4 26 12l-2 19c-1 12-10 21-21 21-12 0-21-9-23-21l-2-22Z" fill="#D0906B" stroke="#805244" stroke-width="2.5"/>
+    <path d="M668 50c4-4 9-5 14-5m18 1c4-1 8 1 11 3" stroke="#624339" stroke-width="2" stroke-linecap="round"/>
+    <path d="M673 60h2m19 0h2m-13 0v7l-3 2m0 5c4 2 7 1 10-1" stroke="#354341" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m654 92-17 20 9 8 26-17m43-9 19 18-8 9-32-14" fill="#E7B75E" stroke="#9D7041" stroke-width="3" stroke-linejoin="round"/>
+    <path d="m644 114-11 6m86-8 20 6" stroke="#D0906B" stroke-width="9" stroke-linecap="round"/>
+    <path d="M728 116c4-5 8-6 12-4l4 4-8 8-10-3 2-5Z" fill="#D0906B" stroke="#805244" stroke-width="2"/>
+    <path d="M721 103h22v12h-22z" fill="#CDEEE2" stroke="#3D8D84" stroke-width="2"/>
+  </g>
+
+  <g transform="translate(65 375)">
+    <path d="M29 79V31" stroke="#74563D" stroke-width="7" stroke-linecap="round"/>
+    <path d="M29 48C9 39 5 25 7 8c20 4 29 18 22 40Zm2 13c19-15 27-32 24-49-20 7-30 22-24 49Z" fill="#73C394" stroke="#347C67" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M9 78h42l-6 27H15L9 78Z" fill="#E7F4DF" stroke="#76B99B" stroke-width="3"/>
+    <path d="M17 89h27" stroke="#A9D6B9" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

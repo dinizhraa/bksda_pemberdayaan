@@ -35,9 +35,15 @@ class MapControllerTest extends TestCase
         $this->assertIsString($mapScript);
         $this->assertStringContainsString('window.L.divIcon', $mapScript);
         $this->assertStringContainsString('fill="#dc2626"', $mapScript);
+        $this->assertStringContainsString("String(value ?? '-')", $mapScript);
+        $this->assertStringContainsString('escapeHtml(location.tahun_pembinaan)', $mapScript);
+        $this->assertStringContainsString('escapeHtml(location.tahun_pembentukan)', $mapScript);
+        $this->assertStringContainsString('escapeHtml(location.tahun_monitoring)', $mapScript);
 
         foreach ([
-            '<dt>Tahun</dt>',
+            '<dt>Tahun Pembinaan</dt>',
+            '<dt>Tahun Pembentukan</dt>',
+            '<dt>Tahun Monitoring</dt>',
             '<dt>Kawasan</dt>',
             '<dt>Desa</dt>',
             '<dt>Kecamatan</dt>',
@@ -74,6 +80,9 @@ class MapControllerTest extends TestCase
                 'status_kelompok' => 'Aktif',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
+                'tahun_pembinaan' => 2019,
+                'tahun_pembentukan' => 2020,
+                'tahun_monitoring' => 2025,
                 'jumlah_bantuan' => 25000000,
                 'jumlah_anggota_laki_laki' => 0,
                 'jumlah_anggota_perempuan' => 0,
@@ -102,6 +111,9 @@ class MapControllerTest extends TestCase
             ->assertSee('data-locations=', false);
         $locations = $mapResponse->viewData('locations');
         $this->assertSame('Aktif', $locations->first()['status_kelompok']);
+        $this->assertSame(2019, $locations->first()['tahun_pembinaan']);
+        $this->assertSame(2020, $locations->first()['tahun_pembentukan']);
+        $this->assertSame(2025, $locations->first()['tahun_monitoring']);
         $this->assertArrayNotHasKey('nama_ketua', $locations->first());
         $this->assertArrayNotHasKey('no_hp', $locations->first());
         $this->assertArrayNotHasKey('sk_kelompok', $locations->first());
@@ -113,6 +125,24 @@ class MapControllerTest extends TestCase
             'latitude' => -0.9012,
             'longitude' => 119.8701,
         ]);
+    }
+
+    public function test_map_keeps_year_fields_separate_when_formation_year_is_missing(): void
+    {
+        Kelompok::create([
+            'nama_kelompok' => 'Kelompok Tahun Lama',
+            'tahun_pembinaan' => 2026,
+            'latitude' => '-0.9012000',
+            'longitude' => '119.8701000',
+        ]);
+
+        $locations = $this->get(route('kelompok.map'))->viewData('locations');
+        $location = $locations->firstWhere('nama_kelompok', 'Kelompok Tahun Lama');
+
+        $this->assertNotNull($location);
+        $this->assertSame(2026, $location['tahun_pembinaan']);
+        $this->assertNull($location['tahun_pembentukan']);
+        $this->assertNull($location['tahun_monitoring']);
     }
 
     public function test_group_coordinates_must_be_provided_together(): void

@@ -117,6 +117,7 @@ class DashboardController extends Controller
 
         // Mengambil data kelompok dari database
         $kelompoks = Kelompok::with(['kawasan', 'desa'])->get();
+        $groupColumns = Kelompok::TABLE_COLUMNS;
 
         return view('dashboard', compact(
             'totalNte',
@@ -131,7 +132,8 @@ class DashboardController extends Controller
             'clusterAnalysis',
             'topDelapan',
             'topKawasan',
-            'clusterSummary'
+            'clusterSummary',
+            'groupColumns',
         ));
     }
 
@@ -165,6 +167,8 @@ class DashboardController extends Controller
             'status_kelompok' => $kelompok->status_kelompok,
             'jenis_usaha' => $kelompok->jenis_usaha,
             'tahun_pembinaan' => $kelompok->tahun_pembinaan,
+            'tahun_pembentukan' => $kelompok->tahun_pembentukan,
+            'tahun_monitoring' => $kelompok->tahun_monitoring,
             'kawasan' => $kelompok->kawasan?->nama_kawasan,
             'desa' => $kelompok->desa?->nama_desa,
             'kecamatan' => $kelompok->kecamatan ?? $kelompok->desa?->kecamatan,
@@ -204,8 +208,10 @@ class DashboardController extends Controller
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
             'nama_desa' => 'required|string|max:255',
+            'tahun_pembinaan' => 'nullable|integer|between:1000,9999',
             'tahun_pembentukan' => 'nullable|integer|between:1000,9999',
             'tahun_monitoring' => 'nullable|integer|between:1000,9999',
+            'no_hp' => 'nullable|string|max:255',
             'catatan_kebutuhan_hasil_monev' => 'nullable|string|max:10000',
             'kecamatan' => 'nullable|string|max:255',
             'kabupaten' => 'nullable|string|max:255',
@@ -216,7 +222,7 @@ class DashboardController extends Controller
             'longitude' => 'nullable|numeric|between:-180,180|required_with:latitude',
         ]);
 
-        DB::transaction(function () use ($request, $validated): void {
+        DB::transaction(function () use ($validated): void {
             $desa = $this->resolveOrCreateDesa(
                 trim($validated['nama_desa']),
                 (int) $validated['kawasan_id'],
@@ -227,18 +233,18 @@ class DashboardController extends Controller
             Kelompok::create([
                 'kawasan_id' => $validated['kawasan_id'],
                 'desa_id' => $desa->id,
-                'tahun_pembinaan' => $request->tahun_pembinaan ?? 2026,
+                'tahun_pembinaan' => $validated['tahun_pembinaan'] ?? null,
                 'kecamatan' => $validated['kecamatan'] ?? null,
                 'kabupaten' => $validated['kabupaten'] ?? null,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
+                'latitude' => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
                 'nama_kelompok' => $validated['nama_kelompok'],
                 'status_kelompok' => $validated['status_kelompok'],
                 'nama_ketua' => $validated['nama_ketua'],
                 'tahun_pembentukan' => $validated['tahun_pembentukan'] ?? null,
                 'tahun_monitoring' => $validated['tahun_monitoring'] ?? null,
                 'catatan_kebutuhan_hasil_monev' => $validated['catatan_kebutuhan_hasil_monev'] ?? null,
-                'no_hp' => $request->no_hp,
+                'no_hp' => $validated['no_hp'] ?? null,
                 'jenis_usaha' => $validated['jenis_usaha'],
                 'sk_kelompok' => $validated['sk_kelompok'] ?? null,
                 'jumlah_anggota_laki_laki' => $validated['jumlah_anggota_laki_laki'],
@@ -262,8 +268,10 @@ class DashboardController extends Controller
             'jenis_usaha' => 'required|string|max:255',
             'jumlah_bantuan' => 'required|numeric',
             'nama_desa' => 'required|string|max:255',
+            'tahun_pembinaan' => 'nullable|integer|between:1000,9999',
             'tahun_pembentukan' => 'nullable|integer|between:1000,9999',
             'tahun_monitoring' => 'nullable|integer|between:1000,9999',
+            'no_hp' => 'nullable|string|max:255',
             'catatan_kebutuhan_hasil_monev' => 'nullable|string|max:10000',
             'kecamatan' => 'nullable|string|max:255',
             'kabupaten' => 'nullable|string|max:255',
@@ -287,7 +295,7 @@ class DashboardController extends Controller
             ];
         }
 
-        DB::transaction(function () use ($request, $validated, $kelompok, $memberCounts): void {
+        DB::transaction(function () use ($validated, $kelompok, $memberCounts): void {
             $desa = $this->resolveOrCreateDesa(
                 trim($validated['nama_desa']),
                 (int) $validated['kawasan_id'],
@@ -298,18 +306,18 @@ class DashboardController extends Controller
             $kelompok->update([
                 'kawasan_id' => $validated['kawasan_id'],
                 'desa_id' => $desa->id,
-                'tahun_pembinaan' => $request->tahun_pembinaan ?? $kelompok->tahun_pembinaan,
+                'tahun_pembinaan' => $validated['tahun_pembinaan'] ?? null,
                 'kecamatan' => $validated['kecamatan'] ?? null,
                 'kabupaten' => $validated['kabupaten'] ?? null,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
+                'latitude' => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
                 'nama_kelompok' => $validated['nama_kelompok'],
                 'status_kelompok' => $validated['status_kelompok'],
                 'nama_ketua' => $validated['nama_ketua'],
                 'tahun_pembentukan' => $validated['tahun_pembentukan'] ?? null,
                 'tahun_monitoring' => $validated['tahun_monitoring'] ?? null,
                 'catatan_kebutuhan_hasil_monev' => $validated['catatan_kebutuhan_hasil_monev'] ?? null,
-                'no_hp' => $request->no_hp,
+                'no_hp' => $validated['no_hp'] ?? null,
                 'jenis_usaha' => $validated['jenis_usaha'],
                 'sk_kelompok' => $validated['sk_kelompok'] ?? null,
                 'jumlah_bantuan' => $validated['jumlah_bantuan'],

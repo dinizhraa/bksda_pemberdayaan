@@ -13,6 +13,31 @@ class KelompokInputTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const EXPECTED_GROUP_HEADERS = [
+        'No',
+        'Tahun Pembinaan',
+        'Tahun Pembentukan',
+        'Tahun Monitoring',
+        'Status Kelompok',
+        'Kawasan',
+        'Desa',
+        'Kecamatan',
+        'Kabupaten',
+        'Nama Kelompok',
+        'Nama Ketua',
+        'No HP',
+        'Latitude',
+        'Longitude',
+        'Jenis Usaha',
+        'SK Kelompok',
+        'Jumlah Anggota Laki-laki',
+        'Jumlah Anggota Perempuan',
+        'Total Anggota',
+        'Jumlah Bantuan (Rp)',
+        'Catatan Kebutuhan / Hasil Monev',
+        'Aksi',
+    ];
+
     public function test_admin_can_create_group_with_village_sk_and_calculated_gender_total(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -29,16 +54,21 @@ class KelompokInputTest extends TestCase
             ->assertSee('Jumlah Anggota Laki-laki')
             ->assertSee('Jumlah Anggota Perempuan')
             ->assertSee('Jumlah Anggota Kelompok')
+            ->assertSee('Tahun Pembinaan')
+            ->assertSee('Tahun Pembentukan Kelompok')
+            ->assertSee('Tahun Monitoring')
             ->assertSee('updateTotal', false);
 
         $html = $formResponse->getContent();
         $desaInput = $this->inputElement($html, 'nama_desa');
+        $trainingYearInput = $this->inputElement($html, 'tahun_pembinaan');
         $maleInput = $this->inputElement($html, 'jumlah_anggota_laki_laki');
         $femaleInput = $this->inputElement($html, 'jumlah_anggota_perempuan');
         $totalInput = $this->inputElement($html, 'jumlah_anggota');
 
         $this->assertSame('text', $desaInput->getAttribute('type'));
         $this->assertTrue($desaInput->hasAttribute('required'));
+        $this->assertSame('number', $trainingYearInput->getAttribute('type'));
         $this->assertSame('number', $maleInput->getAttribute('type'));
         $this->assertSame('number', $femaleInput->getAttribute('type'));
         foreach ([$maleInput, $femaleInput] as $input) {
@@ -50,6 +80,15 @@ class KelompokInputTest extends TestCase
         $response = $this->post(route('kelompok.store'), array_merge($this->groupPayload($kawasan), [
             'nama_desa' => 'Desa Uji Manual',
             'sk_kelompok' => 'SK-2026-001',
+            'tahun_pembinaan' => 2024,
+            'tahun_pembentukan' => 2019,
+            'tahun_monitoring' => 2025,
+            'no_hp' => '08123456789',
+            'kecamatan' => 'Bualemo',
+            'kabupaten' => 'Banggai',
+            'latitude' => '-0.9012',
+            'longitude' => '119.8701',
+            'catatan_kebutuhan_hasil_monev' => 'Catatan kelompok',
             'status_kelompok' => 'Aktif',
             'jumlah_anggota_laki_laki' => 8,
             'jumlah_anggota_perempuan' => 5,
@@ -60,9 +99,22 @@ class KelompokInputTest extends TestCase
         $kelompok = Kelompok::query()->where('nama_kelompok', 'Kelompok Uji')->firstOrFail();
         $this->assertDatabaseHas('kelompoks', [
             'id' => $kelompok->id,
+            'kawasan_id' => $kawasan->id,
             'nama_kelompok' => 'Kelompok Uji',
             'desa_id' => $kelompok->desa_id,
+            'nama_ketua' => 'Ketua Uji',
+            'jenis_usaha' => 'Budidaya ikan',
+            'jumlah_bantuan' => 25000000,
             'sk_kelompok' => 'SK-2026-001',
+            'tahun_pembinaan' => 2024,
+            'tahun_pembentukan' => 2019,
+            'tahun_monitoring' => 2025,
+            'no_hp' => '08123456789',
+            'kecamatan' => 'Bualemo',
+            'kabupaten' => 'Banggai',
+            'latitude' => -0.9012,
+            'longitude' => 119.8701,
+            'catatan_kebutuhan_hasil_monev' => 'Catatan kelompok',
             'status_kelompok' => 'Aktif',
             'jumlah_anggota_laki_laki' => 8,
             'jumlah_anggota_perempuan' => 5,
@@ -74,18 +126,53 @@ class KelompokInputTest extends TestCase
             'kawasan_id' => $kawasan->id,
         ]);
 
-        $this->get(route('kelompok.index'))
-            ->assertOk()
+        $tableResponse = $this->get(route('kelompok.index'))->assertOk();
+        $tableDocument = new \DOMDocument;
+        $tableDocument->loadHTML($tableResponse->getContent(), LIBXML_NOERROR | LIBXML_NOWARNING);
+        $tableHeaders = (new \DOMXPath($tableDocument))
+            ->query('//table[@id="kelompokTable"]/thead/tr/th');
+        $this->assertNotFalse($tableHeaders);
+        $tableHeaderLabels = [];
+        foreach ($tableHeaders as $header) {
+            $tableHeaderLabels[] = trim($header->textContent);
+        }
+        $this->assertSame(self::EXPECTED_GROUP_HEADERS, $tableHeaderLabels);
+        $tableResponse
+            ->assertSee('class="overflow-x-auto px-3 pb-3"', false)
+            ->assertSee('class="glass-table min-w-max"', false)
+            ->assertSee('class="w-36 whitespace-nowrap px-4 py-3 text-center">Aksi</th>', false)
+            ->assertSee('inline-flex items-center gap-1.5 whitespace-nowrap shrink-0', false)
+            ->assertSee('fa-location-dot shrink-0 text-rose-500', false);
+        $tableCells = (new \DOMXPath($tableDocument))
+            ->query('//table[@id="kelompokTable"]/tbody/tr[1]/td');
+        $this->assertNotFalse($tableCells);
+        $tableCellValues = [];
+        foreach ($tableCells as $cell) {
+            $tableCellValues[] = trim(preg_replace('/\s+/', ' ', $cell->textContent));
+        }
+        $this->assertCount(count(self::EXPECTED_GROUP_HEADERS), $tableCellValues);
+        $this->assertSame(['1', '2024', '2019', '2025', 'Aktif'], array_slice($tableCellValues, 0, 5));
+        $this->assertSame('SM Bakiriang', $tableCellValues[5]);
+        $this->assertSame('Desa Uji Manual', $tableCellValues[6]);
+        $this->assertSame('Bualemo', $tableCellValues[7]);
+        $this->assertSame('Banggai', $tableCellValues[8]);
+        $this->assertSame('8', $tableCellValues[16]);
+        $this->assertSame('5', $tableCellValues[17]);
+        $this->assertSame('13', $tableCellValues[18]);
+        $tableResponse
             ->assertSee('Desa Uji Manual')
             ->assertSee('SK-2026-001')
-            ->assertSee('No.')
             ->assertDontSee('ID: KLP-00')
-            ->assertSee('Laki-laki')
-            ->assertSee('Perempuan')
-            ->assertSee('Total Anggota')
-            ->assertSee('<td>8</td>', false)
-            ->assertSee('<td>5</td>', false)
-            ->assertSee('<td>13</td>', false);
+            ->assertSee('2024')
+            ->assertSee('2019')
+            ->assertSee('2025')
+            ->assertSee('Bualemo')
+            ->assertSee('Banggai')
+            ->assertSee('08123456789')
+            ->assertSee('-0.9012')
+            ->assertSee('119.8701')
+            ->assertSee('Budidaya ikan')
+            ->assertSee('Catatan kelompok');
     }
 
     public function test_admin_can_edit_group_gender_counts_and_recalculate_total(): void
@@ -241,6 +328,7 @@ class KelompokInputTest extends TestCase
         );
 
         $this->post(route('kelompok.store'), array_merge($this->groupPayload($kawasan), [
+            'tahun_pembinaan' => 2017,
             'tahun_pembentukan' => 2018,
             'tahun_monitoring' => 2025,
             'catatan_kebutuhan_hasil_monev' => $catatan,
@@ -251,6 +339,7 @@ class KelompokInputTest extends TestCase
         $kelompok = Kelompok::query()->where('nama_kelompok', 'Kelompok Uji')->firstOrFail();
         $this->assertDatabaseHas('kelompoks', [
             'id' => $kelompok->id,
+            'tahun_pembinaan' => 2017,
             'tahun_pembentukan' => 2018,
             'tahun_monitoring' => 2025,
             'catatan_kebutuhan_hasil_monev' => $catatan,
@@ -258,12 +347,14 @@ class KelompokInputTest extends TestCase
 
         $this->get(route('kelompok.edit', $kelompok->id))
             ->assertOk()
+            ->assertSee('value="2017"', false)
             ->assertSee('value="2018"', false)
             ->assertSee('value="2025"', false)
             ->assertSee(e($catatan), false);
 
         $this->put(route('kelompok.update', $kelompok->id), array_merge($this->groupPayload($kawasan), [
             'status_kelompok' => 'Tidak Aktif',
+            'tahun_pembinaan' => 2020,
             'tahun_pembentukan' => 2019,
             'tahun_monitoring' => 2026,
             'catatan_kebutuhan_hasil_monev' => 'Kendala pemasaran; tindak lanjut pelatihan produk.',
@@ -274,6 +365,7 @@ class KelompokInputTest extends TestCase
         $this->assertDatabaseHas('kelompoks', [
             'id' => $kelompok->id,
             'status_kelompok' => 'Tidak Aktif',
+            'tahun_pembinaan' => 2020,
             'tahun_pembentukan' => 2019,
             'tahun_monitoring' => 2026,
             'catatan_kebutuhan_hasil_monev' => 'Kendala pemasaran; tindak lanjut pelatihan produk.',
@@ -281,6 +373,8 @@ class KelompokInputTest extends TestCase
 
         $this->get(route('kelompok.show', $kelompok->id))
             ->assertOk()
+            ->assertSee('Tahun Pembinaan')
+            ->assertSee('2020')
             ->assertSee('Tahun Pembentukan')
             ->assertSee('2019')
             ->assertSee('Status Kelompok')

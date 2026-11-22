@@ -16,32 +16,7 @@ use ZipArchive;
 
 class KelompokExportController extends Controller
 {
-    private const COLUMNS = [
-        'No' => 'no',
-        'Nama Kawasan' => 'kawasan.nama_kawasan',
-        'Nama Desa' => 'desa.nama_desa',
-        'Kecamatan' => 'kecamatan',
-        'Kabupaten' => 'kabupaten',
-        'Tahun Pembinaan' => 'tahun_pembinaan',
-        'Tahun Pembentukan' => 'tahun_pembentukan',
-        'Tahun Monitoring' => 'tahun_monitoring',
-        'Nama Kelompok' => 'nama_kelompok',
-        'Status Kelompok' => 'status_kelompok',
-        'Nama Ketua' => 'nama_ketua',
-        'Nomor HP / Kontak' => 'no_hp',
-        'Jenis Usaha' => 'jenis_usaha',
-        'Produk Unggulan' => 'produk_unggulan',
-        'SK Kelompok' => 'sk_kelompok',
-        'Jumlah Anggota Laki-laki' => 'jumlah_anggota_laki_laki',
-        'Jumlah Anggota Perempuan' => 'jumlah_anggota_perempuan',
-        'Total Anggota' => 'jumlah_anggota',
-        'Jumlah Bantuan (Rp)' => 'jumlah_bantuan',
-        'Latitude' => 'latitude',
-        'Longitude' => 'longitude',
-        'Catatan Kebutuhan / Hasil Monev' => 'catatan_kebutuhan_hasil_monev',
-        'Dibuat Pada' => 'created_at',
-        'Diperbarui Pada' => 'updated_at',
-    ];
+    private const COLUMNS = Kelompok::TABLE_COLUMNS;
 
     /**
      * @var list<string>
@@ -118,7 +93,8 @@ class KelompokExportController extends Controller
 
                     foreach ($attributes as $index => $attribute) {
                         $value = $this->csvValue($attribute, $values[$index]);
-                        if (! in_array($attribute, self::NUMERIC_COLUMNS, true)
+                        if ($value !== '-'
+                            && ! in_array($attribute, self::NUMERIC_COLUMNS, true)
                             && preg_match('/^[\t\r\n ]*[=+\-@]/u', $value) === 1) {
                             $value = "'".$value;
                         }
@@ -323,7 +299,7 @@ class KelompokExportController extends Controller
     private function valuesFor(Kelompok $group, int $rowNumber): array
     {
         return array_map(
-            fn (string $attribute): mixed => $attribute === 'no' ? $rowNumber : data_get($group, $attribute),
+            fn (string $attribute): mixed => $attribute === 'no' ? $rowNumber : (data_get($group, $attribute) ?? '-'),
             array_values(self::COLUMNS),
         );
     }

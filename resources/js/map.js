@@ -68,7 +68,9 @@ if (mapElement) {
                 <div style="min-width:230px">
                     <strong style="display:block;font-size:14px;color:#0f766e;margin-bottom:8px">${escapeHtml(location.nama_kelompok)}</strong>
                     <dl style="display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0;font-size:12px">
-                        <dt>Tahun</dt><dd style="margin:0">${escapeHtml(location.tahun_pembinaan)}</dd>
+                        <dt>Tahun Pembinaan</dt><dd style="margin:0">${escapeHtml(location.tahun_pembinaan)}</dd>
+                        <dt>Tahun Pembentukan</dt><dd style="margin:0">${escapeHtml(location.tahun_pembentukan)}</dd>
+                        <dt>Tahun Monitoring</dt><dd style="margin:0">${escapeHtml(location.tahun_monitoring)}</dd>
                         <dt>Kawasan</dt><dd style="margin:0">${escapeHtml(location.kawasan)}</dd>
                         <dt>Desa</dt><dd style="margin:0">${escapeHtml(location.desa)}</dd>
                         <dt>Kecamatan</dt><dd style="margin:0">${escapeHtml(location.kecamatan)}</dd>
