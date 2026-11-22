@@ -248,4 +248,116 @@ function tableSearch() {
     });
 }
 
-[nteAreaChart, usahaDonut, nteSplitBars, clusterScatter, tableSearch].forEach((init) => init());
+function kelompokExportData() {
+    const table = document.getElementById('kelompokTable');
+    if (!table) return null;
+
+    const actionHeader = table.querySelector('thead th:last-child');
+    const hasActionColumn = actionHeader?.textContent.trim().toLowerCase() === 'aksi';
+    const headers = [...table.querySelectorAll('thead th')]
+        .filter((_, index) => !hasActionColumn || index < table.querySelectorAll('thead th').length - 1)
+        .map((header) => header.textContent.trim());
+    const rows = [...table.querySelectorAll('tbody tr')]
+        .filter((row) => !row.hidden)
+        .map((row) => [...row.querySelectorAll('td')]
+            .filter((_, index) => !hasActionColumn || index < row.querySelectorAll('td').length - 1)
+            .map((cell) => cell.textContent.trim().replace(/\s+/g, ' ')));
+
+    return { headers, rows };
+}
+
+function downloadBlob(filename, content, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+function csvCell(value) {
+    const safeValue = /^[=+\-@]/.test(value) ? `'${value}` : value;
+    return `"${safeValue.replace(/"/g, '""')}"`;
+}
+
+function exportKelompokCsv() {
+    const data = kelompokExportData();
+    if (!data) return;
+
+    const lines = [
+        data.headers.map(csvCell).join(','),
+        ...data.rows.map((row) => row.map(csvCell).join(',')),
+    ];
+    downloadBlob('daftar_kelompok_binaan.csv', `\uFEFF${lines.join('\r\n')}`, 'text/csv;charset=utf-8');
+}
+
+function exportKelompokExcel() {
+    const data = kelompokExportData();
+    if (!data) return;
+
+    const escapeHtml = (value) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    const headerHtml = data.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('');
+    const rowsHtml = data.rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
+    const html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+            <head><meta charset="utf-8"></head>
+            <body><table border="1"><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body>
+        </html>
+    `;
+    downloadBlob('daftar_kelompok_binaan.xls', html, 'application/vnd.ms-excel;charset=utf-8');
+}
+
+function exportKelompokPdf() {
+    const data = kelompokExportData();
+    if (!data) return;
+
+    const escapeHtml = (value) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    const headerHtml = data.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('');
+    const rowsHtml = data.rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
+    const printWindow = window.open('', '_blank', 'noopener,noreferrer');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+        <!doctype html>
+        <html lang="id">
+            <head>
+                <meta charset="utf-8">
+                <title>Daftar Kelompok Binaan</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 24px; color: #183153; }
+                    h1 { font-size: 18px; margin: 0 0 16px; }
+                    table { width: 100%; border-collapse: collapse; font-size: 10px; }
+                    th, td { border: 1px solid #9ca3af; padding: 5px; text-align: left; vertical-align: top; }
+                    th { background: #e8f1f4; }
+                    @page { size: landscape; margin: 10mm; }
+                </style>
+            </head>
+            <body>
+                <h1>Daftar Kelompok Binaan</h1>
+                <table><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.setTimeout(() => printWindow.print(), 250);
+}
+
+function tableExports() {
+    document.getElementById('exportKelompokCsv')?.addEventListener('click', exportKelompokCsv);
+    document.getElementById('exportKelompokExcel')?.addEventListener('click', exportKelompokExcel);
+    document.getElementById('exportKelompokPdf')?.addEventListener('click', exportKelompokPdf);
+}
+
+[nteAreaChart, usahaDonut, nteSplitBars, clusterScatter, tableSearch, tableExports].forEach((init) => init());

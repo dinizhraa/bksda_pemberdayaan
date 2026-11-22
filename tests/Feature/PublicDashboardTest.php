@@ -185,7 +185,13 @@ class PublicDashboardTest extends TestCase
     {
         $this->get(route('kelompok.index'))
             ->assertOk()
-            ->assertSee('Daftar Kelompok Binaan');
+            ->assertSee('Daftar Kelompok Binaan')
+            ->assertSee('id="groupSearch"', false)
+            ->assertSee('Cari nama, desa, atau usaha')
+            ->assertSee('id="exportKelompokCsv"', false)
+            ->assertSee('id="exportKelompokExcel"', false)
+            ->assertSee('id="exportKelompokPdf"', false)
+            ->assertDontSee('Aksi');
     }
 
     public function test_public_visitor_can_open_conservation_area_information_without_login(): void

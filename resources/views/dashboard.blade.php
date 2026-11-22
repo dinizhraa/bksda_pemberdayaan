@@ -396,12 +396,19 @@
                     <p class="mt-0.5 text-xs text-ink-500">Kelompok masyarakat di sekitar kawasan konservasi BKSDA Sulteng.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
-                    @if ($sidebarPage === 'groups')
-                        <label class="search-box" for="groupSearch">
-                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                            <input id="groupSearch" type="search" placeholder="Cari nama, desa, atau usaha…" aria-label="Cari kelompok binaan">
-                        </label>
-                    @endif
+                    <label class="search-box" for="groupSearch">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <input id="groupSearch" type="search" placeholder="Cari nama, desa, atau usaha…" aria-label="Cari kelompok binaan">
+                    </label>
+                    <button type="button" id="exportKelompokCsv" class="btn-icon" title="Unduh CSV" aria-label="Unduh data kelompok sebagai CSV">
+                        <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" id="exportKelompokExcel" class="btn-icon" title="Unduh Excel" aria-label="Unduh data kelompok sebagai Excel">
+                        <i class="fa-solid fa-file-excel" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" id="exportKelompokPdf" class="btn-icon" title="Unduh PDF" aria-label="Unduh data kelompok sebagai PDF">
+                        <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
+                    </button>
                     @if (Auth::check() && Auth::user()->isAdmin())
                         <a href="{{ route('kelompok.create') }}" class="btn-brand"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambah Kelompok</a>
                     @endif
@@ -427,7 +434,9 @@
                             <th>Perempuan</th>
                             <th>Total Anggota</th>
                             <th>Jumlah Bantuan</th>
-                            <th class="w-20 text-right">Aksi</th>
+                            @if (Auth::check() && Auth::user()->isAdmin())
+                                <th class="w-20 text-right">Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -458,8 +467,8 @@
                                 <td>{{ $kelompok->jumlah_anggota_perempuan ?? '-' }}</td>
                                 <td>{{ $kelompok->jumlah_anggota ?? 0 }}</td>
                                 <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
-                                <td class="text-right">
-                                    @if (Auth::check() && Auth::user()->isAdmin())
+                                @if (Auth::check() && Auth::user()->isAdmin())
+                                    <td class="text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('kelompok.edit', $kelompok->id) }}" class="btn-icon" title="Edit data" aria-label="Edit {{ $kelompok->nama_kelompok }}">
                                                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
@@ -473,14 +482,12 @@
                                                 </button>
                                             </form>
                                         </div>
-                                    @else
-                                        <span class="text-xs text-ink-400">Lihat saja</span>
-                                    @endif
-                                </td>
+                                    </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="14">
+                                <td colspan="{{ (Auth::check() && Auth::user()->isAdmin()) ? 16 : 15 }}">
                                     <div class="empty-state">
                                         <i class="fa-solid fa-folder-open text-2xl text-ink-400" aria-hidden="true"></i>
                                         Belum ada data kelompok binaan yang terdaftar.
