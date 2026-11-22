@@ -240,11 +240,26 @@ function tableSearch() {
     const input = document.getElementById('groupSearch') ?? document.getElementById('searchTable');
     if (!input) return;
 
-    input.addEventListener('input', () => {
-        const keyword = input.value.toLowerCase();
-        document.querySelectorAll('#kelompokTable tbody tr').forEach((row) => {
-            row.hidden = !row.textContent.toLowerCase().includes(keyword);
+    const updateExportLinks = () => {
+        const search = input.value.trim();
+        document.querySelectorAll('[data-group-export]').forEach((link) => {
+            const url = new URL(link.dataset.exportBase, window.location.origin);
+            if (search) {
+                url.searchParams.set('search', search);
+            } else {
+                url.searchParams.delete('search');
+            }
+            link.href = url.toString();
         });
+    };
+
+    updateExportLinks();
+    input.addEventListener('input', () => {
+        const keyword = input.value.trim().toLowerCase();
+        document.querySelectorAll('#kelompokTable tbody tr').forEach((row) => {
+            row.hidden = keyword !== '' && !row.dataset.search?.includes(keyword);
+        });
+        updateExportLinks();
     });
 }
 

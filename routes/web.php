@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KelompokExportController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,9 @@ Route::get('/peta-kelompok', [DashboardController::class, 'map'])->name('kelompo
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kelompok/tambah', [DashboardController::class, 'createKelompok'])->name('kelompok.create');
+    Route::get('/kelompok/ekspor/{format}', [KelompokExportController::class, 'export'])
+        ->whereIn('format', ['csv', 'xlsx'])
+        ->name('kelompok.export');
     Route::get('/kelompok/{id}/edit', [DashboardController::class, 'editKelompok'])->name('kelompok.edit');
     Route::post('/kelompok', [DashboardController::class, 'storeKelompok'])->name('kelompok.store');
     Route::put('/kelompok/{id}', [DashboardController::class, 'updateKelompok'])->name('kelompok.update');
@@ -24,5 +28,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/kelompok/{kelompok}', [DashboardController::class, 'showKelompok'])->name('kelompok.show');
 
 require __DIR__.'/auth.php';

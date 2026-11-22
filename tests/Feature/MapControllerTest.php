@@ -12,7 +12,57 @@ class MapControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_map_shows_only_the_basemap_without_deleting_saved_group_coordinates(): void
+    public function test_map_assets_use_esri_satellite_street_controls_without_polygon_layers(): void
+    {
+        $mapScript = file_get_contents(resource_path('js/map.js'));
+        $mapView = file_get_contents(resource_path('views/peta-kelompok.blade.php'));
+
+        $this->assertIsString($mapScript);
+        $this->assertIsString($mapView);
+        $this->assertStringContainsString('World_Imagery/MapServer/tile', $mapScript);
+        $this->assertStringContainsString('World_Boundaries_and_Places/MapServer/tile', $mapScript);
+        $this->assertStringContainsString("'Satellite'", $mapScript);
+        $this->assertStringContainsString("'Street Map'", $mapScript);
+        $this->assertStringNotContainsString('window.L.polygon', $mapScript);
+        $this->assertStringNotContainsString('window.L.geoJSON', $mapScript);
+        $this->assertStringNotContainsString('Polygon Kawasan', $mapView);
+    }
+
+    public function test_map_uses_red_markers_and_only_requested_popup_details(): void
+    {
+        $mapScript = file_get_contents(resource_path('js/map.js'));
+
+        $this->assertIsString($mapScript);
+        $this->assertStringContainsString('window.L.divIcon', $mapScript);
+        $this->assertStringContainsString('fill="#dc2626"', $mapScript);
+
+        foreach ([
+            '<dt>Tahun</dt>',
+            '<dt>Kawasan</dt>',
+            '<dt>Desa</dt>',
+            '<dt>Kecamatan</dt>',
+            '<dt>Kabupaten</dt>',
+            '<dt>Jenis Usaha</dt>',
+            '<dt>Jumlah Anggota Laki-laki</dt>',
+            '<dt>Jumlah Anggota Perempuan</dt>',
+            '<dt>Status Kelompok</dt>',
+        ] as $field) {
+            $this->assertStringContainsString($field, $mapScript);
+        }
+
+        foreach ([
+            '<dt>Ketua</dt>',
+            '<dt>Kontak</dt>',
+            '<dt>SK Kelompok</dt>',
+            '<dt>Anggota</dt>',
+            '<dt>Bantuan</dt>',
+            '<dt>Koordinat</dt>',
+        ] as $field) {
+            $this->assertStringNotContainsString($field, $mapScript);
+        }
+    }
+
+    public function test_map_shows_saved_group_coordinates_without_deleting_them(): void
     {
         $kawasan = Kawasan::create(['nama_kawasan' => 'SM Bakiriang']);
 
@@ -21,6 +71,7 @@ class MapControllerTest extends TestCase
                 'kawasan_id' => $kawasan->id,
                 'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Peta Lestari',
+                'status_kelompok' => 'Aktif',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
@@ -35,6 +86,7 @@ class MapControllerTest extends TestCase
         $response->assertRedirect(route('dashboard'));
         $this->assertDatabaseHas('kelompoks', [
             'nama_kelompok' => 'Kelompok Peta Lestari',
+            'status_kelompok' => 'Aktif',
             'latitude' => -0.9012,
             'longitude' => 119.8701,
         ]);
@@ -42,11 +94,19 @@ class MapControllerTest extends TestCase
         $mapResponse = $this->get(route('kelompok.map'));
 
         $mapResponse->assertOk()
-            ->assertSee('Tampilan basemap tanpa poligon kawasan maupun titik kelompok.')
-            ->assertDontSee('Kelompok Peta Lestari')
+            ->assertSee('Lokasi kelompok binaan yang tersimpan')
+            ->assertSee('Kelompok Peta Lestari')
+            ->assertSee('Aktif')
             ->assertSee('leaflet@1.9.4/dist/leaflet.js', false)
             ->assertSee('group-map')
-            ->assertDontSee('group-map-locations');
+            ->assertSee('data-locations=', false);
+        $locations = $mapResponse->viewData('locations');
+        $this->assertSame('Aktif', $locations->first()['status_kelompok']);
+        $this->assertArrayNotHasKey('nama_ketua', $locations->first());
+        $this->assertArrayNotHasKey('no_hp', $locations->first());
+        $this->assertArrayNotHasKey('sk_kelompok', $locations->first());
+        $this->assertArrayNotHasKey('jumlah_anggota', $locations->first());
+        $this->assertArrayNotHasKey('jumlah_bantuan', $locations->first());
 
         $this->assertDatabaseHas('kelompoks', [
             'nama_kelompok' => 'Kelompok Peta Lestari',
@@ -65,6 +125,7 @@ class MapControllerTest extends TestCase
                 'kawasan_id' => $kawasan->id,
                 'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Tanpa Koordinat Lengkap',
+                'status_kelompok' => 'Aktif',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
@@ -90,6 +151,7 @@ class MapControllerTest extends TestCase
                 'kawasan_id' => $kawasan->id,
                 'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Koordinat Tidak Valid',
+                'status_kelompok' => 'Aktif',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
@@ -116,6 +178,7 @@ class MapControllerTest extends TestCase
                 'kawasan_id' => $kawasan->id,
                 'nama_desa' => 'Desa Peta',
                 'nama_kelompok' => 'Kelompok Peta Edit',
+                'status_kelompok' => 'Aktif',
                 'nama_ketua' => 'Ketua Peta',
                 'jenis_usaha' => 'Budidaya ikan',
                 'jumlah_bantuan' => 25000000,
@@ -130,6 +193,7 @@ class MapControllerTest extends TestCase
             'kawasan_id' => $kawasan->id,
             'nama_desa' => 'Desa Peta',
             'nama_kelompok' => 'Kelompok Peta Edit',
+            'status_kelompok' => 'Aktif',
             'nama_ketua' => 'Ketua Peta',
             'jenis_usaha' => 'Budidaya ikan',
             'jumlah_bantuan' => 25000000,

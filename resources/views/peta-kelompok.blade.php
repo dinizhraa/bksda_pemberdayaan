@@ -1,13 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
         <h1 class="page-title">Peta Kawasan</h1>
-        <p class="page-sub">Tampilan basemap tanpa poligon kawasan maupun titik kelompok.</p>
+        <p class="page-sub">Lokasi kelompok binaan yang tersimpan beserta informasi ringkasnya.</p>
     </x-slot>
 
     <x-glass-card class="flex flex-col gap-4">
         <div id="group-map" class="h-[65vh] min-h-[420px] w-full overflow-hidden rounded-2xl border border-slate-200/80"
-             role="region" aria-label="Basemap kawasan tanpa poligon dan titik"></div>
-        <p class="text-xs text-ink-500">Peta © OpenStreetMap contributors.</p>
+             data-locations="{{ json_encode($locations) }}"
+             role="region" aria-label="Peta titik lokasi kelompok binaan"></div>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs text-ink-500">{{ $locations->count() }} titik koordinat kelompok tersimpan.</p>
+            <a href="{{ route('kelompok.index') }}" class="btn-ghost text-xs">
+                <i class="fa-solid fa-list" aria-hidden="true"></i>
+                Lihat daftar kelompok
+            </a>
+        </div>
+        <p class="text-xs text-ink-500">Citra: Esri World Imagery; jalur: © OpenStreetMap contributors; detail: Esri.</p>
     </x-glass-card>
 
     @push('styles')
