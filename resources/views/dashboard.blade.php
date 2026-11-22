@@ -399,22 +399,6 @@
                     <h2 class="card-title">Daftar Kelompok Binaan</h2>
                     <p class="mt-0.5 text-xs text-ink-500">Kelompok masyarakat di sekitar kawasan konservasi BKSDA Sulteng.</p>
                 </div>
-<<<<<<< HEAD
-                <div class="flex flex-wrap items-center gap-2">
-                    <label class="search-box" for="groupSearch">
-                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                        <input id="groupSearch" type="search" placeholder="Cari nama, desa, atau usaha…" aria-label="Cari kelompok binaan">
-                    </label>
-                    <button type="button" id="exportKelompokCsv" class="btn-icon" title="Unduh CSV" aria-label="Unduh data kelompok sebagai CSV">
-                        <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" id="exportKelompokExcel" class="btn-icon" title="Unduh Excel" aria-label="Unduh data kelompok sebagai Excel">
-                        <i class="fa-solid fa-file-excel" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" id="exportKelompokPdf" class="btn-icon" title="Unduh PDF" aria-label="Unduh data kelompok sebagai PDF">
-                        <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
-                    </button>
-=======
                 <div @class([
                     'grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center' => $sidebarPage === 'groups',
                     'flex flex-wrap items-center gap-2' => $sidebarPage !== 'groups',
@@ -425,7 +409,6 @@
                             <input id="groupSearch" type="search" placeholder="Cari nama, desa, atau usaha…" aria-label="Cari kelompok binaan">
                         </label>
                     @endif
->>>>>>> 29aa590687a5cb963ff4cec6850a6ea532171a70
                     @if (Auth::check() && Auth::user()->isAdmin())
                         @if ($sidebarPage === 'groups')
                             <a href="{{ route('kelompok.export', ['format' => 'csv']) }}"
@@ -476,9 +459,7 @@
                             <th>Perempuan</th>
                             <th>Total Anggota</th>
                             <th>Jumlah Bantuan</th>
-                            @if (Auth::check() && Auth::user()->isAdmin())
-                                <th class="w-20 text-right">Aksi</th>
-                            @endif
+                            <th class="w-20 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -508,8 +489,8 @@
                                 <td>{{ $kelompok->jumlah_anggota_perempuan ?? '-' }}</td>
                                 <td>{{ $kelompok->jumlah_anggota ?? 0 }}</td>
                                 <td class="whitespace-nowrap font-semibold text-brand-700"><x-rupiah :value="$kelompok->jumlah_bantuan" full /></td>
-                                @if (Auth::check() && Auth::user()->isAdmin())
-                                    <td class="text-right">
+                                <td class="text-right">
+                                    @if (Auth::check() && Auth::user()->isAdmin())
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('kelompok.show', $kelompok->id) }}" class="btn-icon" title="Lihat detail" aria-label="Lihat detail {{ $kelompok->nama_kelompok }}">
                                                 <i class="fa-solid fa-eye" aria-hidden="true"></i>
@@ -526,16 +507,14 @@
                                                 </button>
                                             </form>
                                         </div>
-                                    </td>
-                                @endif
+                                    @else
+                                        <span class="text-xs text-ink-400">Lihat saja</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-<<<<<<< HEAD
-                                <td colspan="{{ (Auth::check() && Auth::user()->isAdmin()) ? 16 : 15 }}">
-=======
                                 <td colspan="16">
->>>>>>> 29aa590687a5cb963ff4cec6850a6ea532171a70
                                     <div class="empty-state">
                                         <i class="fa-solid fa-folder-open text-2xl text-ink-400" aria-hidden="true"></i>
                                         Belum ada data kelompok binaan yang terdaftar.
