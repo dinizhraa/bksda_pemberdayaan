@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Kelompok extends Model
 {
@@ -52,5 +53,10 @@ class Kelompok extends Model
     public function desa()
     {
         return $this->belongsTo(Desa::class);
+    }
+
+    public function aiEvaluation(): HasOne
+    {
+        return $this->hasOne(AiGroupEvaluation::class);
     }
 }

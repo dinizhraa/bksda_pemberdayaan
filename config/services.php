@@ -35,4 +35,29 @@ return [
         ],
     ],
 
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'groq'),
+    ],
+
+    'groq' => [
+        'api_key' => env('GROQ_API_KEY'),
+        'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+        'base_url' => env('GROQ_BASE_URL', 'https://api.groq.com/openai/v1/chat/completions'),
+        'timeout' => (int) env('GROQ_TIMEOUT', 30),
+    ],
+
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'base_url' => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+        'fallback_model' => env('GEMINI_FALLBACK_MODEL', 'gemini-2.5-flash-lite'),
+        'connect_timeout' => (int) env('GEMINI_CONNECT_TIMEOUT', 5),
+        'timeout' => (int) env('GEMINI_TIMEOUT', 30),
+        'total_timeout' => (int) env('GEMINI_TOTAL_TIMEOUT', 90),
+        'max_attempts' => (int) env('GEMINI_MAX_ATTEMPTS', 3),
+        'retry_base_delay_ms' => (int) env('GEMINI_RETRY_BASE_DELAY_MS', 250),
+        'retry_max_delay_ms' => (int) env('GEMINI_RETRY_MAX_DELAY_MS', 1000),
+        'max_output_tokens' => (int) env('GEMINI_MAX_OUTPUT_TOKENS', 2048),
+    ],
+
 ];

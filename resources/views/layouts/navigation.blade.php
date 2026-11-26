@@ -27,6 +27,15 @@
         <x-sidebar-link :href="route('kelompok.map')" icon="map-location-dot" :active="request()->routeIs('kelompok.map')">Peta Kawasan</x-sidebar-link>
         @if ($isAdmin)
             <x-sidebar-link :href="route('kelompok.create')" icon="plus" :active="request()->routeIs('kelompok.create')">Tambah Kelompok</x-sidebar-link>
+            <div class="mt-4 border-t border-ink-200/70 pt-4">
+                <p class="px-3.5 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-400">AI ASSISTANT BKSDA</p>
+                <div class="flex flex-col gap-1">
+                    <x-sidebar-link :href="route('ai.chat.index')" icon="comments" :active="request()->routeIs('ai.chat.*')">Chat dengan AI</x-sidebar-link>
+                    <x-sidebar-link :href="route('ai.analytics.index')" icon="chart-line" :active="request()->routeIs('ai.analytics.*')">Analisis Data</x-sidebar-link>
+                    <x-sidebar-link :href="route('ai.monev.index')" icon="clipboard-check" :active="request()->routeIs('ai.monev.*')">Monitoring & Evaluasi</x-sidebar-link>
+                    <x-sidebar-link :href="route('ai.reports.index')" icon="file-lines" :active="request()->routeIs('ai.reports.*')">Generator Laporan</x-sidebar-link>
+                </div>
+            </div>
         @endif
         @if ($isAdmin)
             <x-sidebar-link :href="route('profile.edit')" icon="user-gear" :active="request()->routeIs('profile.*')">Profil</x-sidebar-link>

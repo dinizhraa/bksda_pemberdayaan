@@ -17,3 +17,7 @@ if (document.getElementById('landing')) {
 if (document.getElementById('group-map')) {
     import('./map');
 }
+
+if (document.querySelector('[data-ai-chat], [data-ai-analytics], [data-print-report]')) {
+    import('./ai-assistant');
+}

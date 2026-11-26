@@ -740,3 +740,38 @@
             focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2;
     }
 }
+
+@media print {
+    @page {
+        margin: 16mm;
+    }
+
+    body,
+    body.app-backdrop {
+        background: #fff !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    .ai-print-content,
+    .ai-print-content * {
+        visibility: visible !important;
+    }
+
+    .ai-print-content {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border: 0 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        color: #20332e !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
